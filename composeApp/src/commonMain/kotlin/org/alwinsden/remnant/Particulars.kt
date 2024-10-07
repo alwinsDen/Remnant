@@ -19,7 +19,7 @@ val JudsonFontFamily: FontFamily
         Font(Res.font.judson_italic, FontWeight.Normal, FontStyle.Italic)
     )
 
-val UrbanistFontFamily : FontFamily
+val UrbanistFontFamily: FontFamily
     @Composable get() = FontFamily(
         Font(Res.font.urbanist_light, FontWeight.Light),
         Font(Res.font.urbanist_regular, FontWeight.Normal),
@@ -37,4 +37,9 @@ val InterFontFamily: FontFamily
         Font(Res.font.inter_italic, FontWeight.Normal, FontStyle.Italic),
         Font(Res.font.inter_semibold, FontWeight.SemiBold),
         Font(Res.font.inter_medium, FontWeight.Medium)
+    )
+
+val HomenajeFontFamily: FontFamily
+    @Composable get() = FontFamily(
+        Font(Res.font.homenaje_regular, FontWeight.Normal)
     )
