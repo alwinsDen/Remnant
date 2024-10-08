@@ -15,14 +15,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import org.alwinsden.remnant.InterFontFamily
 import org.alwinsden.remnant.MatescFontFamily
+import org.alwinsden.remnant.NavRouteClass
 import org.jetbrains.compose.resources.painterResource
 import remnant.composeapp.generated.resources.Res
 import remnant.composeapp.generated.resources.kotlin_conf_25
 
 @Composable
-fun Home() {
+fun Home(navController: NavController) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -49,7 +51,9 @@ fun Home() {
             ) {
                 Text(fontFamily = MatescFontFamily, fontSize = 64.sp, color = Color(0xFFFFFFFF), text = "Remnant")
                 OutlinedButton(
-                    onClick = {},
+                    onClick = {
+                        navController.navigate(NavRouteClass.EntryScreen1.route)
+                    },
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFFFFFFF)),
                     shape = RoundedCornerShape(50),
                 ) {

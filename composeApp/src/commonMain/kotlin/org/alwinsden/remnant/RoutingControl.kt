@@ -5,14 +5,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.alwinsden.remnant.ui.EntryScreen1
+import org.alwinsden.remnant.ui.EntryScreen2
 import org.alwinsden.remnant.ui.Home
 
 @Composable
 fun RoutingControl() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "entryscreen_1") {
+    NavHost(navController = navController, startDestination = NavRouteClass.Home.route) {
         //HOME: the main entry point of the application.
-        composable("home") { Home() }
-        composable("entryscreen_1") { EntryScreen1() }
+        composable(NavRouteClass.Home.route) { Home(navController = navController) }
+        composable(NavRouteClass.EntryScreen1.route) { EntryScreen1(navController = navController) }
+        composable(NavRouteClass.EntryScreen2.route) { EntryScreen2(navController = navController) }
     }
 }
