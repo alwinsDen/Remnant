@@ -22,6 +22,7 @@ import androidx.navigation.NavController
 import org.alwinsden.remnant.HomenajeFontFamily
 import org.alwinsden.remnant.InterFontFamily
 import org.alwinsden.remnant.JudsonFontFamily
+import org.alwinsden.remnant.NavRouteClass
 
 @Composable
 fun EntryScreen1(navController: NavController) {
@@ -55,7 +56,7 @@ fun EntryScreen1(navController: NavController) {
         }
         Button(
             onClick = {
-                //
+                navController.navigate(NavRouteClass.EntryScreen2.route)
             },
             modifier = Modifier
                 .align(Alignment.Center)
