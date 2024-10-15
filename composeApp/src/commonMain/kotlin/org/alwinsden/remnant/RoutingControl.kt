@@ -11,7 +11,7 @@ import org.alwinsden.remnant.ui.Home
 @Composable
 fun RoutingControl() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = NavRouteClass.Home.route) {
+    NavHost(navController = navController, startDestination = NavRouteClass.EntryScreen2.route) {
         //HOME: the main entry point of the application.
         composable(NavRouteClass.Home.route) { Home(navController = navController) }
         composable(NavRouteClass.EntryScreen1.route) { EntryScreen1(navController = navController) }
