@@ -7,7 +7,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.alwinsden.remnant.ui.EntryScreen1
-import org.alwinsden.remnant.ui.EntryScreen2
 import org.alwinsden.remnant.ui.Home
 
 @Composable
@@ -57,6 +56,6 @@ fun RoutingControl() {
                 )
             }
         ) { EntryScreen1(navController = navController) }
-        composable(route = NavRouteClass.EntryScreen2.route) { EntryScreen2(navController = navController) }
+        composable(route = NavRouteClass.EntryScreen2.route) { EntryScreen2Source(navController = navController) }
     }
 }

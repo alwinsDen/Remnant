@@ -1,4 +1,4 @@
-package org.alwinsden.remnant.ui
+package org.alwinsden.remnant
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,12 +15,13 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import org.alwinsden.remnant.InterFontFamily
-import org.alwinsden.remnant.JudsonFontFamily
-import org.alwinsden.remnant.NavRouteClass
+
+actual fun getPlatformName(): String {
+    return "android"
+}
 
 @Composable
-fun EntryScreen2(navController: NavController) {
+actual fun EntryScreen2Source(navController: NavController) {
     val interactionSource = remember { MutableInteractionSource() }
     Box(
         modifier = Modifier
