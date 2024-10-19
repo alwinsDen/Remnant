@@ -64,7 +64,7 @@ fun EntryScreen1(navController: NavController) {
             colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF000000)),
         ) {
             Text(
-                text = "Next ->",
+                text = "next ->",
                 color = Color(0xFFFFFFFF),
                 fontFamily = InterFontFamily
             )
