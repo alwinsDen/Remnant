@@ -11,18 +11,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import org.jetbrains.compose.resources.painterResource
-import remnant.composeapp.generated.resources.Bell
-import remnant.composeapp.generated.resources.Hydrangea
-import remnant.composeapp.generated.resources.Hydrangea_bud
-import remnant.composeapp.generated.resources.Res
+import remnant.composeapp.generated.resources.*
 
 actual fun getPlatformName(): String {
     return "android"
@@ -31,9 +26,6 @@ actual fun getPlatformName(): String {
 @Composable
 actual fun EntryScreen2Source(navController: NavController) {
     val interactionSource = remember { MutableInteractionSource() }
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
-    val density = LocalDensity.current
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -41,11 +33,13 @@ actual fun EntryScreen2Source(navController: NavController) {
                 color = Color(0xFFFFFFFF)
             )
     ) {
+        val screenWidth = maxWidth
+        val screenHeight = maxHeight
         Image(
             painter = painterResource(Res.drawable.Bell),
             contentDescription = null,
             modifier = Modifier
-                .width(100.dp)
+                .width(screenWidth * 0.25f)
                 .aspectRatio(0.9758065f)
                 .align(Alignment.TopStart)
         )
@@ -53,7 +47,7 @@ actual fun EntryScreen2Source(navController: NavController) {
             painter = painterResource(Res.drawable.Hydrangea_bud),
             contentDescription = "",
             modifier = Modifier
-                .width(200.dp)
+                .width(screenWidth * 0.5f)
                 //this ratio is calculated from the Image resolution.
                 .aspectRatio(0.87f)
                 .align(Alignment.TopEnd)
@@ -62,14 +56,48 @@ actual fun EntryScreen2Source(navController: NavController) {
             painter = painterResource(Res.drawable.Hydrangea),
             contentDescription = null,
             modifier = Modifier
-                .width(100.dp)
+                .width(screenWidth * 0.25f)
                 .aspectRatio(0.9121622f)
                 .align(Alignment.BottomStart)
+        )
+        Image(
+            painter = painterResource(Res.drawable.Osteospermum_3),
+            contentDescription = null,
+            modifier = Modifier
+                .width(screenWidth * 0.4f)
+                .aspectRatio(0.8307692f)
+                .align(Alignment.BottomEnd)
+        )
+        Image(
+            painter = painterResource(Res.drawable.Tulip),
+            contentDescription = null,
+            modifier = Modifier
+                .width(screenWidth * 0.7f)
+                .aspectRatio(0.7219917f)
+                .align(Alignment.BottomCenter)
+        )
+        Image(
+            painter = painterResource(Res.drawable.Romashka),
+            contentDescription = null,
+            modifier = Modifier
+                .width(screenWidth * 0.45f)
+                .aspectRatio(0.5f)
+                .align(Alignment.CenterStart)
+                .offset(x = 0.dp, y = -(screenHeight / 2) * 0.4f)
+        )
+        Image(
+            painter = painterResource(Res.drawable.Hydrangea_bud_1),
+            contentDescription = null,
+            modifier = Modifier
+                .width(screenWidth * 0.45f)
+                .aspectRatio(0.4592902f)
+                .align(Alignment.CenterStart)
+                .offset(x = 0.dp, y = (screenHeight / 2) * 0.4f)
         )
         Column(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 200.dp, end = 10.dp),
+                .padding(top = 220.dp, end = 10.dp),
 //                .offset {
 //                    val offsetX = with(density) { (screenWidth * 0.5f).toPx() / 2 }
 //                    IntOffset(
@@ -87,7 +115,7 @@ actual fun EntryScreen2Source(navController: NavController) {
                         "World?",
                 textAlign = TextAlign.Right,
                 fontFamily = JudsonFontFamily,
-                fontSize = 30.sp
+                fontSize = 35.sp
             )
             Text(
                 text = "next ->",

@@ -78,7 +78,9 @@ android {
         compose = true
     }
     dependencies {
+        implementation(libs.androidx.navigation.testing)
         debugImplementation(compose.uiTooling)
+        androidTestImplementation("androidx.navigation:navigation-testing:2.8.3")
     }
 }
 
