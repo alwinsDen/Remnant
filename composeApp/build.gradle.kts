@@ -79,6 +79,9 @@ android {
     }
     dependencies {
         implementation(libs.androidx.navigation.testing)
+        implementation(libs.androidx.activity.ktx)
+        implementation("io.insert-koin:koin-androidx-compose:4.0.0")
+        implementation("com.google.android.gms:play-services-auth:21.2.0")
         debugImplementation(compose.uiTooling)
         androidTestImplementation("androidx.navigation:navigation-testing:2.8.3")
     }

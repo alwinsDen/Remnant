@@ -3,8 +3,6 @@ package org.alwinsden.remnant.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,10 +14,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import org.alwinsden.remnant.InterFontFamily
 import org.alwinsden.remnant.MatescFontFamily
-import org.alwinsden.remnant.NavRouteClass
+import org.alwinsden.remnant.components.GoogleLoginInteractible
 import org.jetbrains.compose.resources.painterResource
 import remnant.composeapp.generated.resources.Res
-import remnant.composeapp.generated.resources.android_dark_rd_4x
 import remnant.composeapp.generated.resources.kotlin_conf_25
 
 @Composable
@@ -49,19 +46,7 @@ fun Home(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(fontFamily = MatescFontFamily, fontSize = 64.sp, color = Color(0xFFFFFFFF), text = "Remnant")
-                OutlinedButton(
-                    onClick = {
-                        navController.navigate(NavRouteClass.EntryScreen1.route)
-                    },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF000000)),
-                ) {
-                    Image(
-                        painter = painterResource(Res.drawable.android_dark_rd_4x),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .width(250.dp)
-                    )
-                }
+                GoogleLoginInteractible("TEST_TEST")
             }
         }
         Box(

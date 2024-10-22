@@ -13,9 +13,9 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     jvm()
-    
+
     sourceSets {
         commonMain.dependencies {
             // put your Multiplatform dependencies here
@@ -32,5 +32,13 @@ android {
     }
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
+        buildConfigField("String", "google_client_id", "\"${project.properties["google_client_id"]}\"")
+    }
+    buildFeatures {
+        buildConfig = true
+    }
+    dependencies {
+        implementation("io.insert-koin:koin-androidx-compose:4.0.0")
+        implementation("com.google.android.gms:play-services-auth:21.2.0")
     }
 }
