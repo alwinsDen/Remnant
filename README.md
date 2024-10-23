@@ -27,3 +27,7 @@ cd ~{jresource}/bin
 ### References
 
 1. https://stackoverflow.com/questions/27037194/keystore-file-doesnt-exist
+
+### Setup
+
+1. Add `google-services.json` to `Remnant/composeApp`
