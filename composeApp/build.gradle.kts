@@ -7,6 +7,9 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+
+    //added for firebase-auth
+    id("com.google.gms.google-services")
 }
 
 kotlin {
@@ -81,9 +84,10 @@ android {
         implementation(libs.androidx.navigation.testing)
         implementation(libs.androidx.activity.ktx)
         implementation("io.insert-koin:koin-androidx-compose:4.0.0")
-        implementation("com.google.android.gms:play-services-auth:21.2.0")
         debugImplementation(compose.uiTooling)
         androidTestImplementation("androidx.navigation:navigation-testing:2.8.3")
+        implementation(platform("com.google.firebase:firebase-bom:33.5.0"))
+        implementation("com.google.firebase:firebase-analytics")
     }
 }
 
