@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -14,10 +13,7 @@ import remnant.composeapp.generated.resources.Res
 import remnant.composeapp.generated.resources.android_dark_rd_4x
 
 @Composable
-actual fun GoogleLoginInteractible(test: String) {
-    val coroutineScope = rememberCoroutineScope()
-    val signInRequestCode = 1
-//    val authResultLauncher = rememberLauncherForActivityResult(contract = AuthResultContract(googleSignInClient = )) { }
+actual fun GoogleLoginInteractible() {
     OutlinedButton(
         onClick = {
             /**/

@@ -32,10 +32,6 @@ android {
     }
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
-        buildConfigField("String", "google_client_id", "\"${project.properties["google_client_id"]}\"")
-    }
-    buildFeatures {
-        buildConfig = true
     }
     dependencies {
         implementation("io.insert-koin:koin-androidx-compose:4.0.0")

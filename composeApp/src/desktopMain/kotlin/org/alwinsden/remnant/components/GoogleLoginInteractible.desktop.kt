@@ -13,7 +13,7 @@ import remnant.composeapp.generated.resources.Res
 import remnant.composeapp.generated.resources.android_dark_rd_4x
 
 @Composable
-actual fun GoogleLoginInteractible(test: String) {
+actual fun GoogleLoginInteractible() {
     OutlinedButton(
         onClick = {
             /**/

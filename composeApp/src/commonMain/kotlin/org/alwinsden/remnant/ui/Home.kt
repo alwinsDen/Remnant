@@ -46,7 +46,7 @@ fun Home(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(fontFamily = MatescFontFamily, fontSize = 64.sp, color = Color(0xFFFFFFFF), text = "Remnant")
-                GoogleLoginInteractible("TEST_TEST")
+                GoogleLoginInteractible()
             }
         }
         Box(
