@@ -40,6 +40,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(projects.shared)
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha07")
+            implementation("dev.gitlive:firebase-auth:2.1.0")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -86,8 +87,6 @@ android {
         implementation("io.insert-koin:koin-androidx-compose:4.0.0")
         debugImplementation(compose.uiTooling)
         androidTestImplementation("androidx.navigation:navigation-testing:2.8.3")
-        implementation(platform("com.google.firebase:firebase-bom:33.5.0"))
-        implementation("com.google.firebase:firebase-analytics")
     }
 }
 
