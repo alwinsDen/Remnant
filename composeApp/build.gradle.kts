@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
-
+    alias(libs.plugins.kotlin.serialization)
     //added for firebase-auth
     id("com.google.gms.google-services")
 }
@@ -41,6 +41,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(projects.shared)
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha07")
+            implementation(libs.bundles.ktor)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

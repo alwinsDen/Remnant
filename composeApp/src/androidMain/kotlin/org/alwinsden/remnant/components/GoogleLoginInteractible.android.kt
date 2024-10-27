@@ -22,18 +22,38 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.Firebase
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
+import io.ktor.client.engine.okhttp.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import org.alwinsden.remnant.BuildConfig
 import org.alwinsden.remnant.RemnantAppViewModal
+import org.alwinsden.remnant.networking.ApiCentral
+import org.alwinsden.remnant.networking.createHttpClient
+import org.alwinsden.remnant.networking_utils.onError
+import org.alwinsden.remnant.networking_utils.onSuccess
 import org.jetbrains.compose.resources.painterResource
 import remnant.composeapp.generated.resources.Res
 import remnant.composeapp.generated.resources.android_dark_rd_4x
 import javax.inject.Inject
 
-suspend fun signInWithGoogleIdToken(idToken: String) {
+suspend fun signInWithGoogleIdToken(idToken: String, client: ApiCentral) {
     val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
-    Firebase.auth.signInWithCredential(firebaseCredential).await()
+    val firebaseAuthResult = Firebase.auth.signInWithCredential(firebaseCredential).await()
+    val userIdToken = firebaseAuthResult.user?.getIdToken(true)?.await()?.token
+    if (userIdToken != null) {
+        Log.e("USER_ID_TOKEN", userIdToken)
+        CoroutineScope(Dispatchers.IO).launch {
+            client.testServerStatus()
+                .onSuccess {
+                    Log.e("SUCCESS_PING", it)
+                }
+                .onError {
+                    Log.e("FAILED_PING", "FAILED_LOCALHOST_CALL")
+                }
+        }
+    }
 }
 
 class RemnantViewModel @Inject constructor() : RemnantAppViewModal() {
@@ -41,7 +61,10 @@ class RemnantViewModel @Inject constructor() : RemnantAppViewModal() {
         launchCatching {
             if (credential is CustomCredential) {
                 val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-                signInWithGoogleIdToken(googleIdTokenCredential.idToken)
+                signInWithGoogleIdToken(
+                    googleIdTokenCredential.idToken, client =
+                    ApiCentral(createHttpClient(OkHttp.create()))
+                )
             } else {
                 Log.e("FAILED_CREDS", "UNEXPECTED_CREDENTIALS")
             }
