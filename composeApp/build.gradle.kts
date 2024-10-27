@@ -1,3 +1,4 @@
+import groovy.json.JsonSlurper
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -63,6 +64,14 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+
+        //this is to process the Google services JSON
+        val jsonFile = File("composeApp/google-services.json")
+        val json = JsonSlurper().parse(jsonFile) as Map<*, *>
+        val webClientId = (json["client"] as List<Map<*, *>>)
+            .flatMap { it["oauth_client"] as List<Map<*, *>> }
+            .find { it["client_type"] == 3 }?.get("client_id").toString()
+        buildConfigField("String", "DEFAULT_WEB_CLIENT_ID", "\"$webClientId\"")
     }
     packaging {
         resources {
@@ -89,6 +98,12 @@ android {
         androidTestImplementation("androidx.navigation:navigation-testing:2.8.3")
         implementation(platform("com.google.firebase:firebase-bom:33.5.0"))
         implementation("com.google.firebase:firebase-auth")
+
+        //Credential Manager Dependencies.
+        implementation("com.google.android.gms:play-services-auth:21.2.0")
+        implementation("androidx.credentials:credentials:1.5.0-alpha06")
+        implementation("androidx.credentials:credentials-play-services-auth:1.5.0-alpha06")
+        implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
     }
 }
 
