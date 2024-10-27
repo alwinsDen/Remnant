@@ -98,7 +98,6 @@ android {
     dependencies {
         implementation(libs.androidx.navigation.testing)
         implementation(libs.androidx.activity.ktx)
-        implementation("io.insert-koin:koin-androidx-compose:4.0.0")
         debugImplementation(compose.uiTooling)
         androidTestImplementation("androidx.navigation:navigation-testing:2.8.3")
         implementation(platform("com.google.firebase:firebase-bom:33.5.0"))

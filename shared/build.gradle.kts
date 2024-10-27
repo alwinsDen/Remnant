@@ -33,7 +33,4 @@ android {
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
-    dependencies {
-        implementation("io.insert-koin:koin-androidx-compose:4.0.0")
-    }
 }

@@ -27,6 +27,7 @@ cd ~{jresource}/bin
 ### Todo
 
 1. Add `google-services.json` to `Remnant/composeApp`
+2. add `client_secret_desktop.json` to `Remnant/composeApp`
 
 ### Stackoverflow refs
 
