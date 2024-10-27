@@ -24,10 +24,11 @@ cd ~{jresource}/bin
 ./keytool -list -v -alias androiddebugkey -keystore ~/.android/debug.keystore
 ```
 
-### References
-
-1. https://stackoverflow.com/questions/27037194/keystore-file-doesnt-exist
-
-### Setup
+### Todo
 
 1. Add `google-services.json` to `Remnant/composeApp`
+
+### Stackoverflow refs
+
+1. https://stackoverflow.com/questions/36919313/android-studio-issue-missing-missing-debug-keystore
+2. https://stackoverflow.com/questions/27037194/keystore-file-doesnt-exist
