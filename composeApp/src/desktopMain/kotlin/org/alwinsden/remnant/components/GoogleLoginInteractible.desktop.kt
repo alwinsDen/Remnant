@@ -2,21 +2,80 @@ package org.alwinsden.remnant.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.OutlinedButton
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.google.api.client.auth.oauth2.Credential
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow
+import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets
+import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
+import com.google.api.client.json.gson.GsonFactory
+import com.google.api.client.util.store.DataStoreFactory
+import com.google.api.client.util.store.FileDataStoreFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.painterResource
 import remnant.composeapp.generated.resources.Res
 import remnant.composeapp.generated.resources.android_dark_rd_4x
+import java.awt.Desktop
+import java.io.File
+import java.io.InputStreamReader
+
+val jsonFactory = GsonFactory.getDefaultInstance()
+val CLIENT_SECRET_FILE = "client_secret_desktop.json"
+val SCOPES: MutableCollection<String> =
+    mutableListOf("https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile")
+val DATA_STORE_DIR = File("tokens")
+
+fun signInWithGoogle(authCode: String?) {
+    runBlocking {
+        withContext(Dispatchers.IO) {
+            val httpTransport = GoogleNetHttpTransport.newTrustedTransport()
+            val dataStoreFactory: DataStoreFactory = FileDataStoreFactory(DATA_STORE_DIR)
+
+            // Load client secrets
+            val clientSecrets =
+                GoogleClientSecrets.load(jsonFactory, InputStreamReader(File(CLIENT_SECRET_FILE).inputStream()))
+
+            // Build flow and trigger user authorization request
+            val flow = GoogleAuthorizationCodeFlow.Builder(
+                httpTransport, jsonFactory, clientSecrets, SCOPES
+            )
+                .setDataStoreFactory(dataStoreFactory)
+                .setAccessType("offline")
+                .build()
+
+            if (authCode == null) {
+                val authorizationUrl: String =
+                    flow.newAuthorizationUrl().setRedirectUri("urn:ietf:wg:oauth:2.0:oob").build()
+                Desktop.getDesktop().browse(java.net.URI(authorizationUrl))
+            } else {
+                val tokenResponse: GoogleTokenResponse =
+                    flow.newTokenRequest(authCode).setRedirectUri("urn:ietf:wg:oauth:2.0:oob").execute()
+                val credential: Credential = flow.createAndStoreCredential(tokenResponse, "user")
+                println("Access Token: ${credential.accessToken}")
+            }
+        }
+    }
+}
+
 
 @Composable
 actual fun GoogleLoginInteractible() {
+    var showAuthInputDialog by remember { mutableStateOf(false) }
+    var authCode by remember { mutableStateOf(TextFieldValue("")) }
+
     OutlinedButton(
         onClick = {
-            /**/
+            showAuthInputDialog = true
+            signInWithGoogle(null)
         },
         colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF000000)),
     ) {
@@ -25,6 +84,35 @@ actual fun GoogleLoginInteractible() {
             contentDescription = null,
             modifier = Modifier
                 .width(250.dp)
+        )
+    }
+    if (showAuthInputDialog) {
+        AlertDialog(
+            onDismissRequest = { showAuthInputDialog = false },
+            title = { Text("Enter Authorization Code") },
+            text = {
+                TextField(
+                    value = authCode,
+                    onValueChange = { authCode = it },
+                    label = { Text("Enter the authorization code") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showAuthInputDialog = false
+                        signInWithGoogle(authCode.text)
+                    }
+                ) {
+                    Text("Submit")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showAuthInputDialog = false }) {
+                    Text("Cancel")
+                }
+            }
         )
     }
 }

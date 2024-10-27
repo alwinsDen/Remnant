@@ -41,11 +41,13 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(projects.shared)
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha07")
-            implementation("dev.gitlive:firebase-auth:2.1.0")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+            implementation("com.google.api-client:google-api-client:2.7.0")
+            implementation("com.google.oauth-client:google-oauth-client-jetty:1.36.0")
+            implementation("com.google.api-client:google-api-client-gson:2.7.0")
         }
     }
 }
@@ -67,11 +69,14 @@ android {
 
         //this is to process the Google services JSON
         val jsonFile = File("composeApp/google-services.json")
-        val json = JsonSlurper().parse(jsonFile) as Map<*, *>
-        val webClientId = (json["client"] as List<Map<*, *>>)
-            .flatMap { it["oauth_client"] as List<Map<*, *>> }
-            .find { it["client_type"] == 3 }?.get("client_id").toString()
-        buildConfigField("String", "DEFAULT_WEB_CLIENT_ID", "\"$webClientId\"")
+        //this condition was added because JVM desktop isn't able to detect the file.
+        if (jsonFile.exists()) {
+            val json = JsonSlurper().parse(jsonFile) as Map<*, *>
+            val webClientId = (json["client"] as List<Map<*, *>>)
+                .flatMap { it["oauth_client"] as List<Map<*, *>> }
+                .find { it["client_type"] == 3 }?.get("client_id").toString()
+            buildConfigField("String", "DEFAULT_WEB_CLIENT_ID", "\"$webClientId\"")
+        }
     }
     packaging {
         resources {
