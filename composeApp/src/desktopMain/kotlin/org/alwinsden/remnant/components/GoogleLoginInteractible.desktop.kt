@@ -1,7 +1,11 @@
 package org.alwinsden.remnant.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -89,12 +93,24 @@ actual fun GoogleLoginInteractible() {
     if (showAuthInputDialog) {
         AlertDialog(
             onDismissRequest = { showAuthInputDialog = false },
-            title = { Text("Enter Authorization Code") },
+            title = {
+                Text(
+                    text = "Paste Authorization code below"
+                )
+            },
             text = {
                 TextField(
                     value = authCode,
                     onValueChange = { authCode = it },
-                    label = { Text("Enter the authorization code") },
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.White,
+                        unfocusedIndicatorColor = Color.White,
+                    ),
+                    modifier = Modifier
+                        .border(border = BorderStroke(1.dp, Color.Gray))
+                        .fillMaxWidth(),
+                    maxLines = 3,
+                    minLines = 3,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 )
             },
@@ -103,13 +119,21 @@ actual fun GoogleLoginInteractible() {
                     onClick = {
                         showAuthInputDialog = false
                         signInWithGoogle(authCode.text)
-                    }
+                    },
+                    shape = RoundedCornerShape(20.dp),
                 ) {
                     Text("Submit")
                 }
             },
             dismissButton = {
-                Button(onClick = { showAuthInputDialog = false }) {
+                Button(
+                    onClick = { showAuthInputDialog = false },
+                    shape = RoundedCornerShape(20.dp),
+                    colors = ButtonDefaults
+                        .buttonColors(
+                            backgroundColor = Color.LightGray
+                        )
+                ) {
                     Text("Cancel")
                 }
             }
