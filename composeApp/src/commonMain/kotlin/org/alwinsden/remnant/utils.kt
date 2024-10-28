@@ -16,3 +16,5 @@ open class RemnantAppViewModal : ViewModel() {
         )
     }
 }
+
+expect fun networkHost(): String

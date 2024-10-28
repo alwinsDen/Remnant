@@ -5,6 +5,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.util.network.*
 import kotlinx.serialization.SerializationException
+import org.alwinsden.remnant.networkHost
 import org.alwinsden.remnant.networking_utils.NetworkError
 import org.alwinsden.remnant.networking_utils.Result
 
@@ -14,7 +15,7 @@ class ApiCentral(
     suspend fun testServerStatus(): Result<String, NetworkError> {
         val response = try {
             httpClient.get(
-                urlString = "http://10.0.2.2:8080"
+                urlString = "http://${networkHost()}:8080"
             )
         } catch (e: UnresolvedAddressException) {
             return Result.Error(NetworkError.NO_INTERNET)

@@ -22,9 +22,12 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.util.store.DataStoreFactory
 import com.google.api.client.util.store.FileDataStoreFactory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import io.ktor.client.engine.okhttp.*
+import kotlinx.coroutines.*
+import org.alwinsden.remnant.networking.ApiCentral
+import org.alwinsden.remnant.networking.createHttpClient
+import org.alwinsden.remnant.networking_utils.onError
+import org.alwinsden.remnant.networking_utils.onSuccess
 import org.jetbrains.compose.resources.painterResource
 import remnant.composeapp.generated.resources.Res
 import remnant.composeapp.generated.resources.android_dark_rd_4x
@@ -37,7 +40,6 @@ val CLIENT_SECRET_FILE = "client_secret_desktop.json"
 val SCOPES: MutableCollection<String> =
     mutableListOf("https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile")
 val DATA_STORE_DIR = File("tokens")
-
 fun signInWithGoogle(authCode: String?) {
     runBlocking {
         withContext(Dispatchers.IO) {
@@ -65,6 +67,17 @@ fun signInWithGoogle(authCode: String?) {
                     flow.newTokenRequest(authCode).setRedirectUri("urn:ietf:wg:oauth:2.0:oob").execute()
                 val credential: Credential = flow.createAndStoreCredential(tokenResponse, "user")
                 println("Access Token: ${credential.accessToken}")
+                //run test request post-access_token
+                val apiClient = ApiCentral(createHttpClient(OkHttp.create()))
+                CoroutineScope(Dispatchers.Default).launch {
+                    apiClient.testServerStatus()
+                        .onSuccess {
+                            println("SUCCESS API DESKTOP")
+                        }
+                        .onError {
+                            println("ERROR API DESKTOP")
+                        }
+                }
             }
         }
     }
@@ -117,8 +130,10 @@ actual fun GoogleLoginInteractible() {
             confirmButton = {
                 Button(
                     onClick = {
-                        showAuthInputDialog = false
-                        signInWithGoogle(authCode.text)
+                        if (authCode.text != "") {
+                            showAuthInputDialog = false
+                            signInWithGoogle(authCode.text)
+                        }
                     },
                     shape = RoundedCornerShape(20.dp),
                 ) {
@@ -127,7 +142,9 @@ actual fun GoogleLoginInteractible() {
             },
             dismissButton = {
                 Button(
-                    onClick = { showAuthInputDialog = false },
+                    onClick = {
+                        System.exit(0)
+                    },
                     shape = RoundedCornerShape(20.dp),
                     colors = ButtonDefaults
                         .buttonColors(
