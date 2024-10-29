@@ -16,6 +16,8 @@ fun createHttpClient(engine: HttpClientEngine): HttpClient {
             json(
                 json = Json {
                     ignoreUnknownKeys = true
+                    isLenient = true
+                    prettyPrint = true
                 }
             )
         }
