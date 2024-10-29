@@ -20,6 +20,7 @@ ktor = "2.3.12"
 logback = "1.5.7"
 navigationTesting = "2.8.3"
 playServicesAuth = "21.2.0"
+exposedVersion = "0.55.0"
 
 [libraries]
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
@@ -50,6 +51,14 @@ ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigationTesting" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposedVersion" }
+exposed-crypt = { module = "org.jetbrains.exposed:exposed-crypt", version.ref = "exposedVersion" }
+exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposedVersion" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposedVersion" }
+exposed-kotlin-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposedVersion" }
+exposed-json = { module = "org.jetbrains.exposed:exposed-json", version.ref = "exposedVersion" }
+exposed-money = { module = "org.jetbrains.exposed:exposed-money", version.ref = "exposedVersion" }
+exposed-spring-boot-starter = { module = "org.jetbrains.exposed:exposed-spring-boot-starter", version.ref = "exposedVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -70,4 +79,14 @@ ktor = [
     "ktor-client-okhttp",
     "ktor-serialization-kotlinx-json",
     "ktor-client-auth"
+]
+exposed = [
+    "exposed-core",
+    "exposed-crypt",
+    "exposed-dao",
+    "exposed-jdbc",
+    "exposed-json",
+    "exposed-kotlin-datetime",
+    "exposed-money",
+    "exposed-spring-boot-starter"
 ]
