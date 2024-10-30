@@ -109,6 +109,8 @@ android {
         implementation("androidx.credentials:credentials:1.5.0-alpha06")
         implementation("androidx.credentials:credentials-play-services-auth:1.5.0-alpha06")
         implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+        implementation("app.rive:rive-android:8.7.0")
+        implementation("androidx.startup:startup-runtime:1.1.1")
     }
 }
 
