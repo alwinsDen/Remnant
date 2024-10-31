@@ -43,4 +43,4 @@ cd ~{jresource}/bin
 
 #### _JVM DESKTOP_
 
-1. requires ```libvlc``` with VLC 3.x.x installed on user device.
+1. requires ```libvlc```/```vlccore``` with VLC 3.x.x installed on ```linux```/```OSx``` respctively.
