@@ -24,6 +24,7 @@ import com.google.api.client.util.store.DataStoreFactory
 import com.google.api.client.util.store.FileDataStoreFactory
 import io.ktor.client.engine.okhttp.*
 import kotlinx.coroutines.*
+import org.alwinsden.remnant.animationUtils.rememberVideoStatePlayer
 import org.alwinsden.remnant.networking.ApiCentral
 import org.alwinsden.remnant.networking.createHttpClient
 import org.alwinsden.remnant.networking_utils.onError
@@ -88,7 +89,7 @@ fun signInWithGoogle(authCode: String?) {
 actual fun GoogleLoginInteractible() {
     var showAuthInputDialog by remember { mutableStateOf(false) }
     var authCode by remember { mutableStateOf(TextFieldValue("")) }
-
+    val videoState = rememberVideoStatePlayer()
     OutlinedButton(
         onClick = {
             showAuthInputDialog = true
@@ -96,6 +97,16 @@ actual fun GoogleLoginInteractible() {
         },
         colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF000000)),
     ) {
+//        VideoPlayer(
+//            url = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+//            onFinish = {},
+//            state = videoState,
+//            modifier = Modifier
+//                .height(400.dp)
+//                .width(
+//                    400.dp
+//                )
+//        )
         Image(
             painter = painterResource(Res.drawable.android_dark_rd_4x),
             contentDescription = null,

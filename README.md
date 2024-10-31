@@ -24,7 +24,7 @@ cd ~{jresource}/bin
 ./keytool -list -v -alias androiddebugkey -keystore ~/.android/debug.keystore
 ```
 
-### Todo
+### Creds
 
 1. Add `google-services.json` to `Remnant/composeApp`
 2. add `client_secret_desktop.json` to `Remnant/composeApp`
@@ -36,4 +36,11 @@ cd ~{jresource}/bin
 
 ### Docs
 
-1. _**VLCJ - java vlc**_ https://github.com/JetBrains/compose-multiplatform/blob/master/experimental/components/VideoPlayer
+1. https://github.com/JetBrains/compose-multiplatform/blob/master/experimental/components/VideoPlayer
+   [_**VLCJ - java vlc**_]
+
+### Reqs
+
+#### _JVM DESKTOP_
+
+1. requires ```libvlc``` with VLC 3.x.x installed on user device.

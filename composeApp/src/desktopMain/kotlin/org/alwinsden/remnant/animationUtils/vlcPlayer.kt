@@ -55,7 +55,7 @@ private fun VideoPlayerImpl(
     mediaPlayer.setupVideoFinishHandler(onFinish)
     val factory = remember { { mediaPlayerComponent } }
     LaunchedEffect(url) { mediaPlayer.media().play(url) }
-    LaunchedEffect(seek) { mediaPlayer.controls().setPosition(seek.toDouble()) }
+    LaunchedEffect(seek) { mediaPlayer.controls().setPosition(seek) }
     DisposableEffect(Unit) { onDispose(mediaPlayer::release) }
     SwingPanel(
         factory = factory,
