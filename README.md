@@ -36,6 +36,4 @@ cd ~{jresource}/bin
 
 ### Docs
 
-1.
-
-_**VLCJ - java vlc**_ https://github.com/JetBrains/compose-multiplatform/blob/master/experimental/components/VideoPlayer
+1. _**VLCJ - java vlc**_ https://github.com/JetBrains/compose-multiplatform/blob/master/experimental/components/VideoPlayer
