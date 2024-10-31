@@ -49,6 +49,7 @@ kotlin {
             implementation("com.google.api-client:google-api-client:2.7.0")
             implementation("com.google.oauth-client:google-oauth-client-jetty:1.36.0")
             implementation("com.google.api-client:google-api-client-gson:2.7.0")
+            implementation("uk.co.caprica:vlcj:5.0.0-M1")
         }
     }
 }

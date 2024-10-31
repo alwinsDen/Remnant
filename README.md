@@ -33,3 +33,9 @@ cd ~{jresource}/bin
 
 1. https://stackoverflow.com/questions/36919313/android-studio-issue-missing-missing-debug-keystore
 2. https://stackoverflow.com/questions/27037194/keystore-file-doesnt-exist
+
+### Docs
+
+1.
+
+_**VLCJ - java vlc**_ https://github.com/JetBrains/compose-multiplatform/blob/master/experimental/components/VideoPlayer

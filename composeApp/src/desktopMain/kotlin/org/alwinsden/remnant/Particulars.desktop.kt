@@ -12,3 +12,8 @@ actual fun getPlatformName(): String {
 actual fun EntryScreen2Source(navController: NavController) {
     Text(text = "desktop expect function")
 }
+
+data class Progress(
+    val fraction: Float,
+    val timeMillis: Long
+)
