@@ -9,9 +9,9 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
-import org.alwinsden.remnant.models.api_data_class.AuthPost
-import org.alwinsden.remnant.models.api_data_class.MessageResponseClass
-import org.alwinsden.remnant.models.api_data_class.TestRequest
+import org.alwinsden.remnant.api_data_class.AuthPost
+import org.alwinsden.remnant.api_data_class.MessageResponseClass
+import org.alwinsden.remnant.api_data_class.TestRequest
 import org.alwinsden.remnant.models.configureDatabase
 
 fun main() {

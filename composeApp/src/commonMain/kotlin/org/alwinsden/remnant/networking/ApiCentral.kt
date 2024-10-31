@@ -7,6 +7,8 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.util.network.*
 import kotlinx.serialization.SerializationException
+import org.alwinsden.remnant.api_data_class.AuthPost
+import org.alwinsden.remnant.api_data_class.MessageResponseClass
 import org.alwinsden.remnant.networkHost
 import org.alwinsden.remnant.networking_utils.NetworkError
 import org.alwinsden.remnant.networking_utils.Result
@@ -37,7 +39,7 @@ class ApiCentral(
         }
     }
 
-    suspend fun AuthRequest(data: AuthPost): Result<MessageResponseClass, NetworkError> {
+    suspend fun authRequest(data: AuthPost): Result<MessageResponseClass, NetworkError> {
         val response: HttpResponse = try {
             httpClient.post(
                 "$serverEndPoint/auth",

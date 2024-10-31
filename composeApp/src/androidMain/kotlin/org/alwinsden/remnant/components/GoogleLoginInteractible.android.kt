@@ -29,8 +29,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import org.alwinsden.remnant.BuildConfig
 import org.alwinsden.remnant.RemnantAppViewModal
+import org.alwinsden.remnant.api_data_class.AuthPost
 import org.alwinsden.remnant.networking.ApiCentral
-import org.alwinsden.remnant.networking.AuthPost
 import org.alwinsden.remnant.networking.createHttpClient
 import org.alwinsden.remnant.networking_utils.NetworkLogCodes
 import org.alwinsden.remnant.networking_utils.onError
@@ -47,7 +47,7 @@ suspend fun signInWithGoogleIdToken(idToken: String, client: ApiCentral) {
     if (userIdToken != null) {
         Log.e(NetworkLogCodes.ObtainedAuth.code, userIdToken)
         CoroutineScope(Dispatchers.Default).launch {
-            client.AuthRequest(AuthPost(authCode = userIdToken, authMachine = "ANDROID"))
+            client.authRequest(AuthPost(authCode = userIdToken, authMachine = "ANDROID"))
                 .onSuccess {
                     Log.e(NetworkLogCodes.ObtainedAuth.code, it.responseMessage)
                 }

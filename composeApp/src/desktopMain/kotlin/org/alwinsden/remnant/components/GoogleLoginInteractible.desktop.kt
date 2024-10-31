@@ -25,8 +25,8 @@ import com.google.api.client.util.store.FileDataStoreFactory
 import io.ktor.client.engine.okhttp.*
 import kotlinx.coroutines.*
 import org.alwinsden.remnant.animationUtils.rememberVideoStatePlayer
+import org.alwinsden.remnant.api_data_class.AuthPost
 import org.alwinsden.remnant.networking.ApiCentral
-import org.alwinsden.remnant.networking.AuthPost
 import org.alwinsden.remnant.networking.createHttpClient
 import org.alwinsden.remnant.networking_utils.onError
 import org.alwinsden.remnant.networking_utils.onSuccess
@@ -72,7 +72,7 @@ fun signInWithGoogle(authCode: String?) {
                 //run test request post-access_token
                 val apiClient = ApiCentral(createHttpClient(OkHttp.create()))
                 CoroutineScope(Dispatchers.Default).launch {
-                    apiClient.AuthRequest(AuthPost(authMachine = "DESKTOP", authCode = credential.accessToken))
+                    apiClient.authRequest(AuthPost(authMachine = "DESKTOP", authCode = credential.accessToken))
                         .onSuccess {
                             println(it.responseMessage)
                         }

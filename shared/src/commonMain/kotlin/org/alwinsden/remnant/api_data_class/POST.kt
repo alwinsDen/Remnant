@@ -1,4 +1,5 @@
-package org.alwinsden.remnant.networking
+package org.alwinsden.remnant.api_data_class
+
 
 import kotlinx.serialization.Serializable
 
@@ -13,5 +14,3 @@ data class MessageResponseClass(
     val responseCode: Int,
     val responseMessage: String,
 )
-
-

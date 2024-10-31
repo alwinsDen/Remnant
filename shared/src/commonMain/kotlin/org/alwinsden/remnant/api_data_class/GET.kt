@@ -1,4 +1,4 @@
-package org.alwinsden.remnant.models.api_data_class
+package org.alwinsden.remnant.api_data_class
 
 import kotlinx.serialization.Serializable
 
