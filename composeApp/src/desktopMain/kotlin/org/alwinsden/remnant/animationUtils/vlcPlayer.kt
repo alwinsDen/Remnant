@@ -1,6 +1,8 @@
 package org.alwinsden.remnant.animationUtils
 
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.graphics.Color
@@ -15,9 +17,32 @@ import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent
 import java.awt.Component
 import java.util.*
 
+@Composable
+fun VideoPlayer(
+    url: String,
+    state: VideoPlayerState,
+    modifier: Modifier = Modifier,
+    onFinish: (() -> Unit)?
+) = VideoPlayerImpl(
+    seek = state.seek,
+    modifier = modifier,
+    url = url,
+    onFinish = onFinish,
+    progressState = state._progress
+)
 
 @Composable
-fun VideoPlayerImpl(
+fun rememberVideoStatePlayer(
+    seek: Float = 0f
+): VideoPlayerState = rememberSaveable(saver = VideoPlayerState.saver()) {
+    VideoPlayerState(
+        seek,
+        progress = Progress(0f, 0)
+    )
+}
+
+@Composable
+private fun VideoPlayerImpl(
     progressState: MutableState<Progress>,
     onFinish: (() -> Unit)?,
     url: String,
@@ -84,5 +109,31 @@ private fun initializeMediaPlayerComponent(): Component {
         CallbackMediaPlayerComponent()
     } else {
         EmbeddedMediaPlayerComponent()
+    }
+}
+
+class VideoPlayerState(
+    seek: Float = 0f,
+    progress: Progress
+) {
+    var seek by mutableStateOf(seek)
+    internal val _progress = mutableStateOf(progress)
+    val progress: State<Progress> = _progress
+
+    companion object {
+        fun saver() = listSaver<VideoPlayerState, Any>(
+            save = {
+                listOf(
+                    it.seek,
+                    it.progress.value
+                )
+            },
+            restore = {
+                VideoPlayerState(
+                    seek = it[0] as Float,
+                    progress = it[1] as Progress
+                )
+            }
+        )
     }
 }
