@@ -5,9 +5,12 @@ import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
+import org.alwinsden.remnant.models.api_data_class.AuthPost
+import org.alwinsden.remnant.models.api_data_class.MessageResponseClass
 import org.alwinsden.remnant.models.api_data_class.TestRequest
 import org.alwinsden.remnant.models.configureDatabase
 
@@ -30,6 +33,16 @@ fun Application.module() {
                 TestRequest(
                     "Pinging at this port",
                     SERVER_PORT
+                )
+            )
+        }
+        post("/auth") {
+            val req = call.receive<AuthPost>()
+            println("${req.authMachine} ${req.authCode}")
+            call.respond(
+                MessageResponseClass(
+                    200,
+                    "Auth code received",
                 )
             )
         }

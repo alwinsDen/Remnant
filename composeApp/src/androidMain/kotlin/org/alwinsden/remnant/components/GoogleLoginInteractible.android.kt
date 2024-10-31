@@ -30,7 +30,9 @@ import kotlinx.coroutines.tasks.await
 import org.alwinsden.remnant.BuildConfig
 import org.alwinsden.remnant.RemnantAppViewModal
 import org.alwinsden.remnant.networking.ApiCentral
+import org.alwinsden.remnant.networking.AuthPost
 import org.alwinsden.remnant.networking.createHttpClient
+import org.alwinsden.remnant.networking_utils.NetworkLogCodes
 import org.alwinsden.remnant.networking_utils.onError
 import org.alwinsden.remnant.networking_utils.onSuccess
 import org.jetbrains.compose.resources.painterResource
@@ -43,14 +45,14 @@ suspend fun signInWithGoogleIdToken(idToken: String, client: ApiCentral) {
     val firebaseAuthResult = Firebase.auth.signInWithCredential(firebaseCredential).await()
     val userIdToken = firebaseAuthResult.user?.getIdToken(true)?.await()?.token
     if (userIdToken != null) {
-        Log.e("USER_ID_TOKEN", userIdToken)
-        CoroutineScope(Dispatchers.IO).launch {
-            client.testServerStatus()
+        Log.e(NetworkLogCodes.ObtainedAuth.code, userIdToken)
+        CoroutineScope(Dispatchers.Default).launch {
+            client.AuthRequest(AuthPost(authCode = userIdToken, authMachine = "ANDROID"))
                 .onSuccess {
-                    Log.e("SUCCESS_PING", it)
+                    Log.e(NetworkLogCodes.ObtainedAuth.code, it.responseMessage)
                 }
                 .onError {
-                    Log.e("FAILED_PING", "FAILED_LOCALHOST_CALL")
+                    Log.e(NetworkLogCodes.FailedAuth.code, "Failed the server authentication.")
                 }
         }
     }
@@ -66,7 +68,7 @@ class RemnantViewModel @Inject constructor() : RemnantAppViewModal() {
                     ApiCentral(createHttpClient(OkHttp.create()))
                 )
             } else {
-                Log.e("FAILED_CREDS", "UNEXPECTED_CREDENTIALS")
+                Log.e(NetworkLogCodes.FailedAuth.code, "Failed to obtain google-sign in code.")
             }
         }
     }
@@ -94,9 +96,9 @@ actual fun GoogleLoginInteractible() {
                         context = context,
                     )
                     viewModel.onSignInWithGoogle(request.credential)
-                    Log.d("GOOGLE_LOGIN", "Credential obtained: ${request.credential}")
+                    Log.d(NetworkLogCodes.SuccessPing.code, "Credential obtained: ${request.credential}")
                 } catch (e: GetCredentialException) {
-                    Log.d("FAILED", e.message.orEmpty())
+                    Log.d(NetworkLogCodes.FailedPing.code, e.message.orEmpty())
                 }
             }
         },
