@@ -77,7 +77,7 @@ fun signInWithGoogle(authCode: String?) {
                 CoroutineScope(Dispatchers.Default).launch {
                     apiClient.authRequest(AuthPost(authMachine = "DESKTOP", authCode = credential.accessToken))
                         .onSuccess {
-                            println(it.responseMessage)
+                            println(it.token)
                         }
                         .onError {
                             println("server authentication failed.")

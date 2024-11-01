@@ -1,14 +1,12 @@
 package org.alwinsden.remnant.models.User
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.serialization.Serializable
+import org.alwinsden.remnant.api_data_class.ExposedUser
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 
-@Serializable
-data class ExposedUser(val name: String, val email: String)
 class UserSchemaService(private val database: Database) {
     object Users : Table() {
         val id = integer("id").autoIncrement()
@@ -27,7 +25,7 @@ class UserSchemaService(private val database: Database) {
             * TODO: Exposed has issues with checking or existence of columns
             *  so use raw sql query for this.
             * */
-            if(Users.exists()){
+            if (Users.exists()) {
                 exec("alter table ${Users.tableName} drop column if exists age")
                 if (Users.columns.none { it.name == "email" }) {
                     exec("alter table ${Users.tableName} add column email VARCHAR(50)")

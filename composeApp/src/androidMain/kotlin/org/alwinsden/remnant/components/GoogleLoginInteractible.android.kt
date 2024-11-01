@@ -49,7 +49,7 @@ suspend fun signInWithGoogleIdToken(idToken: String, client: ApiCentral) {
         CoroutineScope(Dispatchers.Default).launch {
             client.authRequest(AuthPost(authCode = userIdToken, authMachine = "ANDROID"))
                 .onSuccess {
-                    Log.e(NetworkLogCodes.ObtainedAuth.code, it.responseMessage)
+                    Log.e(NetworkLogCodes.ObtainedAuth.code, it.token)
                 }
                 .onError {
                     Log.e(NetworkLogCodes.FailedAuth.code, "Failed the server authentication.")

@@ -12,5 +12,5 @@ data class AuthPost(
 @Serializable
 data class MessageResponseClass(
     val responseCode: Int,
-    val responseMessage: String,
+    val token: String,
 )
