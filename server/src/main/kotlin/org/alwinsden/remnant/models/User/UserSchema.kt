@@ -24,12 +24,14 @@ class UserSchemaService(private val database: Database) {
 //                exec("alter table ${Users.tableName} drop column age")
 //            }
             /*
-            * TODO: Exposed has issues with checking or existance of columns
+            * TODO: Exposed has issues with checking or existence of columns
             *  so use raw sql query for this.
             * */
-            exec("alter table ${Users.tableName} drop column if exists age")
-            if (Users.columns.none { it.name == "email" }) {
-                exec("alter table ${Users.tableName} add column email VARCHAR(50)")
+            if(Users.exists()){
+                exec("alter table ${Users.tableName} drop column if exists age")
+                if (Users.columns.none { it.name == "email" }) {
+                    exec("alter table ${Users.tableName} add column email VARCHAR(50)")
+                }
             }
             SchemaUtils.createMissingTablesAndColumns(Users)
         }
@@ -44,10 +46,10 @@ class UserSchemaService(private val database: Database) {
         }[Users.id]
     }
 
-    suspend fun read(id: Int): ExposedUser? {
+    suspend fun readEmail(email: String): ExposedUser? {
         return dbQuery {
             Users.selectAll()
-                .where { Users.id eq id }
+                .where { Users.email eq email }
                 .map {
                     ExposedUser(
                         it[Users.name], it[Users.email

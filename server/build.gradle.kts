@@ -26,6 +26,7 @@ dependencies {
     implementation(libs.bundles.exposed)
     implementation(libs.ktor.server.auth)
     implementation(libs.ktor.server.auth.jwt)
+    implementation(libs.bundles.ktor)
     implementation("com.google.firebase:firebase-admin:9.4.1")
     implementation("org.postgresql:postgresql:42.7.4")
 }

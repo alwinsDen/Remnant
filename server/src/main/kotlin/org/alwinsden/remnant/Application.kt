@@ -13,6 +13,7 @@ import org.alwinsden.remnant.api_data_class.AuthPost
 import org.alwinsden.remnant.api_data_class.MessageResponseClass
 import org.alwinsden.remnant.api_data_class.TestRequest
 import org.alwinsden.remnant.controlUtils.configurationFirebase
+import org.alwinsden.remnant.models.User.UserSchemaService
 import org.alwinsden.remnant.models.configureDatabase
 
 fun main() {
@@ -22,7 +23,11 @@ fun main() {
 
 fun Application.module() {
     configurationFirebase()
-    configureDatabase()
+    val database = configureDatabase()
+
+    //enable schemas
+    UserSchemaService(database)
+
     install(ContentNegotiation) {
         json(json = Json {
             prettyPrint = true
@@ -41,6 +46,11 @@ fun Application.module() {
         post("/auth") {
             val req = call.receive<AuthPost>()
             println("${req.authMachine} ${req.authCode}")
+            if(req.authMachine=="DESKTOP"){
+                desktopAuth(accessToken = req.authCode)
+            } else if (req.authMachine=="ANDROID") {
+                androidAuth(accessToken = req.authCode)
+            }
             call.respond(
                 MessageResponseClass(
                     200,

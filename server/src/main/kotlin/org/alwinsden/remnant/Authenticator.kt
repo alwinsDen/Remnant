@@ -1,0 +1,54 @@
+package org.alwinsden.remnant
+
+import io.ktor.server.application.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import okhttp3.OkHttp
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.alwinsden.remnant.api_data_class.GCloudAuthResult
+import org.alwinsden.remnant.models.User.ExposedUser
+import org.alwinsden.remnant.models.User.UserSchemaService
+import org.alwinsden.remnant.models.configureDatabase
+
+fun desktopAuth(accessToken: String) {
+    val client = OkHttpClient()
+    val database = configureDatabase()
+    val userInstance = UserSchemaService(database)
+    val request = Request.Builder()
+        .url("https://www.googleapis.com/oauth2/v3/userinfo")
+        .addHeader("Authorization", "Bearer $accessToken")
+        .build()
+    client.newCall(request).execute().use { response ->
+        if (response.isSuccessful) {
+            val responseBody = response.body?.string()
+            //convert it to the GCloudAuthResult type.
+            val userDetails = responseBody?.let {
+                Json.decodeFromString<GCloudAuthResult>(it)
+            }
+            CoroutineScope(Dispatchers.IO).launch {
+                val userExists = userDetails?.let { userInstance.readEmail(it.email) }
+
+                //adds the user if the user doesn't exist in the Remnant user DB.
+                if (userExists == null && userDetails != null) {
+                    userInstance.create(
+                        ExposedUser(
+                            email = userDetails.email, name = userDetails.name
+                        )
+                    )
+                } else if (userExists!=null){
+                    println("The user exists in the database.")
+                }
+            }
+        } else {
+            println("Failed to verify the authenticity of the user.")
+        }
+    }
+}
+
+fun androidAuth(accessToken: String) {
+
+}
