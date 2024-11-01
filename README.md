@@ -39,7 +39,7 @@ cd ~{jresource}/bin
 ### Docs
 
 1. https://github.com/JetBrains/compose-multiplatform/blob/master/experimental/components/VideoPlayer
-   [_**VLCJ - java vlc**_]
+2. https://github.com/ktorio/ktor-documentation/tree/3.0.0/codeSnippets/snippets/auth-jwt-rs256
 
 ### Reqs
 
