@@ -62,7 +62,10 @@ fun signInWithGoogle(authCode: String?) {
 
             if (authCode == null) {
                 val authorizationUrl: String =
-                    flow.newAuthorizationUrl().setRedirectUri("urn:ietf:wg:oauth:2.0:oob").build()
+                    flow.newAuthorizationUrl()
+                        .setRedirectUri("urn:ietf:wg:oauth:2.0:oob")
+                        .setScopes(listOf("openid", "profile", "email"))
+                        .build()
                 Desktop.getDesktop().browse(java.net.URI(authorizationUrl))
             } else {
                 val tokenResponse: GoogleTokenResponse =

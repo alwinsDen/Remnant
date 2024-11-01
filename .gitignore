@@ -18,3 +18,4 @@ captures
 **/xcshareddata/WorkspaceSettings.xcsettings
 composeApp/google-services.json
 composeApp/client_secret_desktop.json
+server/src/main/resources/ktor-firebase-auth-firebase-adminsdk.json

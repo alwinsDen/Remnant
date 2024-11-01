@@ -12,6 +12,7 @@ import kotlinx.serialization.json.Json
 import org.alwinsden.remnant.api_data_class.AuthPost
 import org.alwinsden.remnant.api_data_class.MessageResponseClass
 import org.alwinsden.remnant.api_data_class.TestRequest
+import org.alwinsden.remnant.controlUtils.configurationFirebase
 import org.alwinsden.remnant.models.configureDatabase
 
 fun main() {
@@ -20,6 +21,7 @@ fun main() {
 }
 
 fun Application.module() {
+    configurationFirebase()
     configureDatabase()
     install(ContentNegotiation) {
         json(json = Json {

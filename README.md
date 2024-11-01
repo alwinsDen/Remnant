@@ -28,6 +28,8 @@ cd ~{jresource}/bin
 
 1. Add `google-services.json` to `Remnant/composeApp`
 2. add `client_secret_desktop.json` to `Remnant/composeApp`
+3. add `ktor-firebase-auth-firebase-adminsdk.json` to
+   `Remnant/server/src/main/resources/ktor-firebase-auth-firebase-adminsdk.json`
 
 ### Stackoverflow refs
 
