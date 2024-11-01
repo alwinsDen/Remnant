@@ -81,7 +81,8 @@ class Authenticator(private val applicationConfig: ApplicationConfig, private va
         val privateKeyString = applicationConfig.property("jwt.privateKey").getString()
         val audience = applicationConfig.property("jwt.audience").getString()
         val issuer = applicationConfig.property("jwt.issuer").getString()
-        val publicKey = jwkProvider.get(applicationConfig.property("jwt.publicKey").getString()).publicKey
+        //the below ID needs to match with kid param in certs/jwks.json
+        val publicKey = jwkProvider.get("86e1621b-31d1-4e10-a9f4-efc72f259180").publicKey
         val keySpecPKCS8 = PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyString))
         val privateKey = KeyFactory.getInstance("RSA").generatePrivate(keySpecPKCS8)
         val token = JWT.create()
@@ -89,7 +90,7 @@ class Authenticator(private val applicationConfig: ApplicationConfig, private va
             .withIssuer(issuer)
             .withClaim("email", email)
             .withClaim("name", name)
-            .withExpiresAt(Date(System.currentTimeMillis() + 60000))
+            .withExpiresAt(Date(System.currentTimeMillis() + 600000))
             .sign(Algorithm.RSA256(publicKey as RSAPublicKey, privateKey as RSAPrivateKey))
         return token
     }
