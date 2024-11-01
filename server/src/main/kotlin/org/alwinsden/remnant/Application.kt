@@ -92,7 +92,11 @@ fun Application.module() {
         post("/auth") {
             val req = call.receive<AuthPost>()
             val authenticator =
-                Authenticator(applicationConfig = applicationConfiguration, jwkProvider = jwkProvider)
+                Authenticator(
+                    applicationConfig = applicationConfiguration,
+                    jwkProvider = jwkProvider,
+                    database = database
+                )
             val verifiedDetails =
                 authenticator.generalAuthenticator(authMachine = req.authMachine, accessToken = req.authCode)
             if (verifiedDetails != null) {

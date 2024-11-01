@@ -3,6 +3,7 @@ package org.alwinsden.remnant
 import com.auth0.jwk.JwkProvider
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.google.firebase.auth.FirebaseAuth
 import io.ktor.server.config.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
@@ -11,28 +12,30 @@ import okhttp3.Request
 import org.alwinsden.remnant.api_data_class.ExposedUser
 import org.alwinsden.remnant.api_data_class.GCloudAuthResult
 import org.alwinsden.remnant.models.User.UserSchemaService
-import org.alwinsden.remnant.models.configureDatabase
+import org.jetbrains.exposed.sql.Database
 import java.security.KeyFactory
 import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
 import java.security.spec.PKCS8EncodedKeySpec
 import java.util.*
 
-class Authenticator(private val applicationConfig: ApplicationConfig, private val jwkProvider: JwkProvider) {
+class Authenticator(
+    private val applicationConfig: ApplicationConfig,
+    private val jwkProvider: JwkProvider,
+    private val database: Database
+) {
 
     fun generalAuthenticator(accessToken: String, authMachine: String): ExposedUser? {
         if (authMachine == "DESKTOP") {
-            val userDataHolder = desktopAuth(accessToken = accessToken)
-            return userDataHolder
+            return desktopAuth(accessToken = accessToken)
         } else if (authMachine == "ANDROID") {
-            androidAuth(accessToken = accessToken)
+            return androidAuth(accessToken = accessToken)
         }
         return null
     }
 
     private fun desktopAuth(accessToken: String): ExposedUser? {
         val client = OkHttpClient()
-        val database = configureDatabase(applicationConfig)
         val userInstance = UserSchemaService(database)
         val request = Request.Builder()
             .url("https://www.googleapis.com/oauth2/v3/userinfo")
@@ -73,8 +76,33 @@ class Authenticator(private val applicationConfig: ApplicationConfig, private va
         return null
     }
 
-    private fun androidAuth(accessToken: String) {
-
+    private fun androidAuth(accessToken: String): ExposedUser? {
+        try {
+            val decodedJWT = FirebaseAuth.getInstance().verifyIdToken(accessToken)
+            val name = decodedJWT.name
+            val email = decodedJWT.email
+            val userInstance = UserSchemaService(database)
+            return runBlocking {
+                val userExists = userInstance.readEmail(email = email)
+                if (userExists == null) {
+                    userInstance.create(
+                        ExposedUser(
+                            email = email, name = name
+                        )
+                    )
+                    ExposedUser(
+                        email = email, name = name
+                    )
+                } else {
+                    ExposedUser(
+                        email = email, name = name
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            println("Android authenticator failed.")
+            return null
+        }
     }
 
     fun generateJWT(email: String, name: String): String {
