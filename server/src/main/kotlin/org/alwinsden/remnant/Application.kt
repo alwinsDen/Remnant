@@ -1,14 +1,8 @@
 package org.alwinsden.remnant
 
-import com.auth0.jwk.JwkProviderBuilder
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
 import io.ktor.server.engine.*
-import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
@@ -21,8 +15,6 @@ import org.alwinsden.remnant.api_data_class.TestRequest
 import org.alwinsden.remnant.controlUtils.configurationFirebase
 import org.alwinsden.remnant.models.User.UserSchemaService
 import org.alwinsden.remnant.models.configureDatabase
-import java.io.File
-import java.util.concurrent.TimeUnit
 
 fun main(args: Array<String>) {
     embeddedServer(Netty, commandLineEnvironment(args))
@@ -53,11 +45,8 @@ fun Application.module() {
         post("/auth") {
             val req = call.receive<AuthPost>()
             println("${req.authMachine} ${req.authCode}")
-            generalAuthenticator(
-                accessToken = req.authCode,
-                authMachine = req.authMachine,
-                applicationConfig = applicationConfiguration
-            )
+            val jwtAuthenticator = Authenticator(applicationConfig = applicationConfiguration)
+                .generalAuthenticator(authMachine = req.authMachine, accessToken = req.authCode)
             call.respond(
                 MessageResponseClass(
                     200,
