@@ -24,18 +24,17 @@ import org.alwinsden.remnant.models.configureDatabase
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-fun main() {
-    embeddedServer(Netty, port = SERVER_PORT, host = "localhost", module = Application::module)
+fun main(args: Array<String>) {
+    embeddedServer(Netty, commandLineEnvironment(args))
         .start(wait = true)
 }
 
 fun Application.module() {
     val applicationConfiguration = environment.config
     configurationFirebase()
-    val database = configureDatabase()
+    val database = configureDatabase(applicationConfiguration)
     //enable schemas
     UserSchemaService(database)
-
     install(ContentNegotiation) {
         json(json = Json {
             prettyPrint = true

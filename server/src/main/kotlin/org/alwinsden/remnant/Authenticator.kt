@@ -28,15 +28,15 @@ import java.util.concurrent.TimeUnit
 
 fun generalAuthenticator(accessToken: String, authMachine: String, applicationConfig: ApplicationConfig) {
     if (authMachine == "DESKTOP") {
-        var res = desktopAuth(accessToken = accessToken)
+        var res = desktopAuth(accessToken = accessToken, applicationConfig = applicationConfig)
     } else if (authMachine == "ANDROID") {
         androidAuth(accessToken = accessToken)
     }
 }
 
-fun desktopAuth(accessToken: String): Boolean {
+fun desktopAuth(accessToken: String,applicationConfig: ApplicationConfig): Boolean {
     val client = OkHttpClient()
-    val database = configureDatabase()
+    val database = configureDatabase(applicationConfig)
     val userInstance = UserSchemaService(database)
     val request = Request.Builder()
         .url("https://www.googleapis.com/oauth2/v3/userinfo")
