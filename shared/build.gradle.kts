@@ -21,6 +21,10 @@ kotlin {
         commonMain.dependencies {
             // put your Multiplatform dependencies here
             implementation(libs.bundles.ktor)
+            implementation(libs.datastore.preferences.core)
+        }
+        androidMain.dependencies {
+            implementation(libs.androidx.startup.runtime)
         }
     }
 }

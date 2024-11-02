@@ -18,6 +18,10 @@
             tools:node="merge"
         >
             <meta-data
+                android:name="context.ContextProvider"
+                android:value="androidx.startup"
+            />
+            <meta-data
                 android:name="app.rive.runtime.kotlin.RiveInitializer"
                 android:value="androidx.startup"
             />
