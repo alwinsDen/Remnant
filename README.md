@@ -40,6 +40,7 @@ cd ~{jresource}/bin
 
 1. https://github.com/JetBrains/compose-multiplatform/blob/master/experimental/components/VideoPlayer
 2. https://github.com/ktorio/ktor-documentation/tree/3.0.0/codeSnippets/snippets/auth-jwt-rs256
+3. https://kb.vander.host/security/how-to-generate-rsa-public-and-private-key-pair-in-pkcs8-format/
 
 ### Reqs
 
