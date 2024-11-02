@@ -18,11 +18,14 @@ kotlin = "2.0.20"
 kotlinx-coroutines = "1.8.1"
 ktor = "2.3.12"
 logback = "1.5.7"
+navigationCompose = "2.7.0-alpha07"
 navigationTesting = "2.8.3"
 playServicesAuth = "21.2.0"
 exposedVersion = "0.55.0"
 firebaseCommonKtx = "21.0.0"
 firebaseCommon = "21.0.0"
+androidx-data-store = "1.1.1"
+androidx-startup = "1.2.0"
 
 [libraries]
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
@@ -54,6 +57,7 @@ ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor" }
 ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktor" }
 androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigationTesting" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposedVersion" }
 exposed-crypt = { module = "org.jetbrains.exposed:exposed-crypt", version.ref = "exposedVersion" }
@@ -65,6 +69,8 @@ exposed-money = { module = "org.jetbrains.exposed:exposed-money", version.ref = 
 exposed-spring-boot-starter = { module = "org.jetbrains.exposed:exposed-spring-boot-starter", version.ref = "exposedVersion" }
 firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-ktx", version.ref = "firebaseCommonKtx" }
 firebase-common = { group = "com.google.firebase", name = "firebase-common", version.ref = "firebaseCommon" }
+datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "androidx-data-store" }
+androidx-startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "androidx-startup" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

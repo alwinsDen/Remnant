@@ -40,8 +40,9 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(projects.shared)
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha07")
+            implementation(libs.navigation.compose)
             implementation(libs.bundles.ktor)
+            implementation(libs.datastore.preferences.core)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -111,7 +112,7 @@ android {
         implementation("androidx.credentials:credentials-play-services-auth:1.5.0-alpha06")
         implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
         implementation("app.rive:rive-android:8.7.0")
-        implementation("androidx.startup:startup-runtime:1.1.1")
+        implementation(libs.androidx.startup.runtime)
     }
 }
 
