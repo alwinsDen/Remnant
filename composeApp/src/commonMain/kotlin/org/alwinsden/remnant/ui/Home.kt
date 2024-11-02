@@ -4,7 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,13 +14,25 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import org.alwinsden.remnant.InterFontFamily
 import org.alwinsden.remnant.MatescFontFamily
+import org.alwinsden.remnant.NavRouteClass
 import org.alwinsden.remnant.components.GoogleLoginInteractible
+import org.alwinsden.remnant.viewModels.JwtViewModel
 import org.jetbrains.compose.resources.painterResource
 import remnant.composeapp.generated.resources.Res
 import remnant.composeapp.generated.resources.kotlin_conf_25
 
 @Composable
 fun Home(navController: NavController) {
+    val jwtViewModel: JwtViewModel = remember { JwtViewModel() }
+    val tokenData by jwtViewModel.tokenState.collectAsState()
+    fun updateToken(token: String) {
+        jwtViewModel.updateToken(token)
+    }
+    LaunchedEffect(tokenData) {
+        if (tokenData != "") {
+            navController.navigate(NavRouteClass.EntryScreen1.route)
+        }
+    }
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -45,8 +57,13 @@ fun Home(navController: NavController) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(fontFamily = MatescFontFamily, fontSize = 64.sp, color = Color(0xFFFFFFFF), text = "Remnant")
-                GoogleLoginInteractible()
+                Text(
+                    fontFamily = MatescFontFamily,
+                    fontSize = 64.sp,
+                    color = Color(0xFFFFFFFF),
+                    text = "Remnant"
+                )
+                GoogleLoginInteractible(updateToken = ::updateToken)
             }
         }
         Box(

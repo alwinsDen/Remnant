@@ -40,16 +40,16 @@ import remnant.composeapp.generated.resources.Res
 import remnant.composeapp.generated.resources.android_dark_rd_4x
 import javax.inject.Inject
 
-suspend fun signInWithGoogleIdToken(idToken: String, client: ApiCentral) {
+suspend fun signInWithGoogleIdToken(idToken: String, client: ApiCentral, updateToken: (String) -> Unit) {
     val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
     val firebaseAuthResult = Firebase.auth.signInWithCredential(firebaseCredential).await()
     val userIdToken = firebaseAuthResult.user?.getIdToken(true)?.await()?.token
     if (userIdToken != null) {
-        Log.e(NetworkLogCodes.ObtainedAuth.code, userIdToken)
         CoroutineScope(Dispatchers.Default).launch {
             client.authRequest(AuthPost(authCode = userIdToken, authMachine = "ANDROID"))
                 .onSuccess {
-                    Log.e(NetworkLogCodes.ObtainedAuth.code, it.token)
+                    Log.e(NetworkLogCodes.ObtainedAuth.code, "Auth token obtained.")
+                    updateToken(it.token)
                 }
                 .onError {
                     Log.e(NetworkLogCodes.FailedAuth.code, "Failed the server authentication.")
@@ -59,13 +59,14 @@ suspend fun signInWithGoogleIdToken(idToken: String, client: ApiCentral) {
 }
 
 class RemnantViewModel @Inject constructor() : RemnantAppViewModal() {
-    fun onSignInWithGoogle(credential: Credential) {
+    fun onSignInWithGoogle(credential: Credential, updateToken: (String) -> Unit) {
         launchCatching {
             if (credential is CustomCredential) {
                 val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                 signInWithGoogleIdToken(
                     googleIdTokenCredential.idToken, client =
-                    ApiCentral(createHttpClient(OkHttp.create()))
+                    ApiCentral(createHttpClient(OkHttp.create())),
+                    updateToken = updateToken
                 )
             } else {
                 Log.e(NetworkLogCodes.FailedAuth.code, "Failed to obtain google-sign in code.")
@@ -75,7 +76,7 @@ class RemnantViewModel @Inject constructor() : RemnantAppViewModal() {
 }
 
 @Composable
-actual fun GoogleLoginInteractible() {
+actual fun GoogleLoginInteractible(updateToken: (String) -> Unit) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val credentialManager = CredentialManager.create(context)
@@ -95,7 +96,7 @@ actual fun GoogleLoginInteractible() {
                         request = request,
                         context = context,
                     )
-                    viewModel.onSignInWithGoogle(request.credential)
+                    viewModel.onSignInWithGoogle(request.credential, updateToken = updateToken)
                     Log.d(NetworkLogCodes.SuccessPing.code, "Credential obtained: ${request.credential}")
                 } catch (e: GetCredentialException) {
                     Log.d(NetworkLogCodes.FailedPing.code, e.message.orEmpty())

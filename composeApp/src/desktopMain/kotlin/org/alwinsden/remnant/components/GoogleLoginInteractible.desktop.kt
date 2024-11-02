@@ -42,7 +42,7 @@ val CLIENT_SECRET_FILE = "client_secret_desktop.json"
 val SCOPES: MutableCollection<String> =
     mutableListOf("https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile")
 val DATA_STORE_DIR = File("tokens")
-fun signInWithGoogle(authCode: String?) {
+fun signInWithGoogle(authCode: String?, updateToken: (String) -> Unit) {
     runBlocking {
         withContext(Dispatchers.IO) {
             val httpTransport = GoogleNetHttpTransport.newTrustedTransport()
@@ -77,7 +77,7 @@ fun signInWithGoogle(authCode: String?) {
                 CoroutineScope(Dispatchers.Default).launch {
                     apiClient.authRequest(AuthPost(authMachine = "DESKTOP", authCode = credential.accessToken))
                         .onSuccess {
-                            println("TOKEN ${it.token}")
+                            updateToken(it.token)
                         }
                         .onError {
                             println("server authentication failed.")
@@ -90,14 +90,14 @@ fun signInWithGoogle(authCode: String?) {
 
 
 @Composable
-actual fun GoogleLoginInteractible() {
+actual fun GoogleLoginInteractible(updateToken: (String) -> Unit) {
     var showAuthInputDialog by remember { mutableStateOf(false) }
     var authCode by remember { mutableStateOf(TextFieldValue("")) }
     val videoState = rememberVideoStatePlayer()
     OutlinedButton(
         onClick = {
             showAuthInputDialog = true
-            signInWithGoogle(null)
+            signInWithGoogle(null, updateToken)
         },
         colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF000000)),
     ) {
@@ -147,7 +147,7 @@ actual fun GoogleLoginInteractible() {
                     onClick = {
                         if (authCode.text != "") {
                             showAuthInputDialog = false
-                            signInWithGoogle(authCode.text)
+                            signInWithGoogle(authCode.text, updateToken)
                         }
                     },
                     shape = RoundedCornerShape(20.dp),
