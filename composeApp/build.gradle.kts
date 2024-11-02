@@ -40,8 +40,9 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(projects.shared)
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha07")
+            implementation(libs.navigation.compose)
             implementation(libs.bundles.ktor)
+            implementation(libs.datastore.preferences.core)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
