@@ -10,6 +10,9 @@ actual fun dataStorePreferences(
     corruptionHandler: ReplaceFileCorruptionHandler<Preferences>?,
     coroutineScope: CoroutineScope,
     migrations: List<DataMigration<Preferences>>
-): DataStore<Preferences> {
-    TODO("Not yet implemented")
-}
+): DataStore<Preferences> = createDataStoreWithDefaults(
+    corruptionHandler = corruptionHandler,
+    migrations = migrations,
+    coroutineScope = coroutineScope,
+    path = { SETTING_PREFERENCES }
+)

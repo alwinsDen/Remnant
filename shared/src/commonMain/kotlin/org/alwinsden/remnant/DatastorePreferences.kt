@@ -23,7 +23,7 @@ internal fun createDataStoreWithDefaults(
     coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
     migrations: List<DataMigration<Preferences>> = emptyList(),
     path: () -> String
-) {
+) =
     PreferenceDataStoreFactory
         .createWithPath(
             corruptionHandler = corruptionHandler,
@@ -33,4 +33,3 @@ internal fun createDataStoreWithDefaults(
                 path().toPath()
             }
         )
-}
