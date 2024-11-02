@@ -1,4 +1,4 @@
-package org.alwinsden.remnant
+package org.alwinsden.remnant.dataStore
 
 import androidx.datastore.core.DataMigration
 import androidx.datastore.core.DataStore
