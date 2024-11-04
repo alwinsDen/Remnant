@@ -12,7 +12,7 @@ class UserSchemaService(private val database: Database) {
         val id = integer("id").autoIncrement()
         val name = varchar("name", length = 50)
         val email = varchar("email", length = 50)
-
+        val state = integer(name = "state").default(1)
         override val primaryKey = PrimaryKey(id)
     }
 
@@ -29,6 +29,9 @@ class UserSchemaService(private val database: Database) {
                 exec("alter table ${Users.tableName} drop column if exists age")
                 if (Users.columns.none { it.name == "email" }) {
                     exec("alter table ${Users.tableName} add column email VARCHAR(50)")
+                }
+                if (Users.columns.none { it.name == "state" }) {
+                    exec("alter table ${Users.tableName} add column state")
                 }
             }
             SchemaUtils.createMissingTablesAndColumns(Users)
