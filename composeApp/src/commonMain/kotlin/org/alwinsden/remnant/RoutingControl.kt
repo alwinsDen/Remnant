@@ -16,7 +16,7 @@ import org.alwinsden.remnant.ui.Home
 fun RoutingControl() {
     val navController = rememberNavController()
     NavHost(
-        navController = navController, startDestination = NavRouteClass.Home.route, modifier = Modifier
+        navController = navController, startDestination = returnNavClassOnJwt(), modifier = Modifier
             .background(color = Color(0xFF000000))
     ) {
         //HOME: the main entry point of the application.

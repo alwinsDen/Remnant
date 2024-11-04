@@ -26,6 +26,7 @@ import io.ktor.client.engine.okhttp.*
 import kotlinx.coroutines.*
 import org.alwinsden.remnant.animationUtils.rememberVideoStatePlayer
 import org.alwinsden.remnant.api_data_class.AuthPost
+import org.alwinsden.remnant.dataStore.coreComponent
 import org.alwinsden.remnant.networking.ApiCentral
 import org.alwinsden.remnant.networking.createHttpClient
 import org.alwinsden.remnant.networking_utils.onError
@@ -42,7 +43,7 @@ val CLIENT_SECRET_FILE = "client_secret_desktop.json"
 val SCOPES: MutableCollection<String> =
     mutableListOf("https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile")
 val DATA_STORE_DIR = File("tokens")
-fun signInWithGoogle(authCode: String?, updateToken: (String) -> Unit) {
+fun signInWithGoogle(authCode: String?) {
     runBlocking {
         withContext(Dispatchers.IO) {
             val httpTransport = GoogleNetHttpTransport.newTrustedTransport()
@@ -71,13 +72,12 @@ fun signInWithGoogle(authCode: String?, updateToken: (String) -> Unit) {
                 val tokenResponse: GoogleTokenResponse =
                     flow.newTokenRequest(authCode).setRedirectUri("urn:ietf:wg:oauth:2.0:oob").execute()
                 val credential: Credential = flow.createAndStoreCredential(tokenResponse, "user")
-                println("Access Token: ${credential.accessToken}")
                 //run test request post-access_token
                 val apiClient = ApiCentral(createHttpClient(OkHttp.create()))
                 CoroutineScope(Dispatchers.Default).launch {
                     apiClient.authRequest(AuthPost(authMachine = "DESKTOP", authCode = credential.accessToken))
                         .onSuccess {
-                            updateToken(it.token)
+                            coreComponent.appPreferences.addUpdateAuthKey(jwtToken = it.token)
                         }
                         .onError {
                             println("server authentication failed.")
@@ -90,14 +90,14 @@ fun signInWithGoogle(authCode: String?, updateToken: (String) -> Unit) {
 
 
 @Composable
-actual fun GoogleLoginInteractible(updateToken: (String) -> Unit) {
+actual fun GoogleLoginInteractible() {
     var showAuthInputDialog by remember { mutableStateOf(false) }
     var authCode by remember { mutableStateOf(TextFieldValue("")) }
     val videoState = rememberVideoStatePlayer()
     OutlinedButton(
         onClick = {
             showAuthInputDialog = true
-            signInWithGoogle(null, updateToken)
+            signInWithGoogle(null)
         },
         colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF000000)),
     ) {
@@ -147,7 +147,7 @@ actual fun GoogleLoginInteractible(updateToken: (String) -> Unit) {
                     onClick = {
                         if (authCode.text != "") {
                             showAuthInputDialog = false
-                            signInWithGoogle(authCode.text, updateToken)
+                            signInWithGoogle(authCode.text)
                         }
                     },
                     shape = RoundedCornerShape(20.dp),
