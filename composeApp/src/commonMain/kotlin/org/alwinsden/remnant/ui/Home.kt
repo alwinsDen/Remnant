@@ -3,23 +3,50 @@ package org.alwinsden.remnant.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.ktor.client.engine.okhttp.*
 import org.alwinsden.remnant.InterFontFamily
+import org.alwinsden.remnant.LocalNavController
 import org.alwinsden.remnant.MatescFontFamily
+import org.alwinsden.remnant.NavRouteClass
 import org.alwinsden.remnant.components.GoogleLoginInteractible
+import org.alwinsden.remnant.dataStore.coreComponent
+import org.alwinsden.remnant.networking.ApiCentral
+import org.alwinsden.remnant.networking.createHttpClient
+import org.alwinsden.remnant.networking_utils.onError
+import org.alwinsden.remnant.networking_utils.onSuccess
 import org.jetbrains.compose.resources.painterResource
 import remnant.composeapp.generated.resources.Res
 import remnant.composeapp.generated.resources.kotlin_conf_25
 
 @Composable
 fun Home() {
+    val client = ApiCentral(createHttpClient(OkHttp.create()))
+    var isJwtVerificationLoading by remember { mutableStateOf(true) }
+    val nvvController = LocalNavController.current
+    LaunchedEffect(Unit) {
+        val jwtTokenValue = coreComponent.appPreferences.doesAuthKeyExist()
+        if (jwtTokenValue.isNotEmpty()) {
+            client.profileGetRequest()
+                .onSuccess {
+                    nvvController.navigate(NavRouteClass.EntryScreen1.route)
+                }
+                .onError {
+                    println("User authentication Failed.")
+                    isJwtVerificationLoading = false
+                }
+        } else {
+            isJwtVerificationLoading = false
+        }
+    }
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -47,7 +74,36 @@ fun Home() {
                     color = Color(0xFFFFFFFF),
                     text = "Remnant"
                 )
-                GoogleLoginInteractible()
+                Box(
+                    modifier = Modifier
+                        .height(70.dp)
+                ) {
+                    if (!isJwtVerificationLoading) {
+                        GoogleLoginInteractible()
+                    } else {
+                        Row(
+                            modifier =
+                            Modifier
+                                .align(Alignment.Center),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        ) {
+                            CircularProgressIndicator(
+                                color = Color(0xffffffff),
+                                modifier = Modifier
+                                    .width(18.dp)
+                                    .height(18.dp),
+                                strokeWidth = 2.dp
+                            )
+                            Text(
+                                text = "Retrieving login information!",
+                                color = Color(0xffffffff),
+                                fontFamily = InterFontFamily,
+                                fontSize = 16.sp
+                            )
+                        }
+                    }
+                }
             }
         }
         Box(

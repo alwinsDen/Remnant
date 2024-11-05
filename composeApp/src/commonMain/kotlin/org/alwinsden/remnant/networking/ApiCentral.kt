@@ -9,9 +9,12 @@ import io.ktor.util.network.*
 import kotlinx.serialization.SerializationException
 import org.alwinsden.remnant.api_data_class.AuthPost
 import org.alwinsden.remnant.api_data_class.MessageResponseClass
+import org.alwinsden.remnant.api_data_class.UserProfileClass
+import org.alwinsden.remnant.dataStore.coreComponent
 import org.alwinsden.remnant.networkHost
 import org.alwinsden.remnant.networking_utils.NetworkError
 import org.alwinsden.remnant.networking_utils.Result
+import javax.naming.AuthenticationException
 
 class ApiCentral(
     private val httpClient: HttpClient
@@ -61,6 +64,27 @@ class ApiCentral(
             }
 
             else -> Result.Error(NetworkError.UNKNOWN)
+        }
+    }
+
+    suspend fun profileGetRequest(): Result<UserProfileClass, NetworkError> {
+        val jwtTokenValue = coreComponent.appPreferences.doesAuthKeyExist()
+        val response: HttpResponse = try {
+            httpClient.get(
+                "$serverEndPoint/profile",
+            ) {
+                headers {
+                    append("Authorization", "Bearer $jwtTokenValue")
+                }
+
+            }
+        } catch (e: AuthenticationException) {
+            return Result.Error(NetworkError.UNAUTHORIZED)
+        }
+        return if (response.status == HttpStatusCode.Accepted) {
+            Result.Success(response.body())
+        } else {
+            Result.Error(NetworkError.UNAUTHORIZED)
         }
     }
 }

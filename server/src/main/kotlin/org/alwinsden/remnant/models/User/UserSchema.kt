@@ -57,8 +57,7 @@ class UserSchemaService(private val database: Database) {
                 .where { Users.email eq email }
                 .map {
                     ExposedUser(
-                        it[Users.name], it[Users.email
-                        ]
+                        it[Users.name], it[Users.email], it[Users.demo_completed]
                     )
                 }
                 .singleOrNull()

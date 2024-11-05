@@ -51,7 +51,6 @@ suspend fun signInWithGoogleIdToken(idToken: String, client: ApiCentral, nvvCont
         runBlocking {
             client.authRequest(AuthPost(authCode = userIdToken, authMachine = "ANDROID"))
                 .onSuccess {
-                    Log.e(NetworkLogCodes.ObtainedAuth.code, "Auth token obtained.")
                     coreComponent.appPreferences.addUpdateAuthKey(jwtToken = it.token)
                     nvvController.navigate(NavRouteClass.EntryScreen1.route)
                 }

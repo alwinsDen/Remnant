@@ -22,7 +22,7 @@ fun RoutingControl() {
     CompositionLocalProvider(LocalNavController provides navController) {
         NavHost(
             navController = navController,
-            startDestination = returnNavClassOnJwt(),
+            startDestination = NavRouteClass.Home.route,
             modifier = Modifier
                 .background(color = Color(0xff000000))
         ) {

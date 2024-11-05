@@ -13,10 +13,9 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
-import org.alwinsden.remnant.api_data_class.AuthPost
-import org.alwinsden.remnant.api_data_class.MessageResponseClass
-import org.alwinsden.remnant.api_data_class.TestRequest
+import org.alwinsden.remnant.api_data_class.*
 import org.alwinsden.remnant.controlUtils.configurationFirebase
 import org.alwinsden.remnant.models.User.UserSchemaService
 import org.alwinsden.remnant.models.configureDatabase
@@ -80,6 +79,30 @@ fun Application.module() {
                 val expiresAt = principal.expiresAt?.time?.minus(System.currentTimeMillis())
                 call.respondText("Hello $emailIdentifier with $username, token expires at $expiresAt")
             }
+            get("/profile") {
+                val principal = call.principal<JWTPrincipal>()
+                val userEmail = principal!!.payload.getClaim("email").asString()
+                val userInstance = UserSchemaService(database)
+                runBlocking {
+                    val userData = userInstance.readEmail(
+                        email = userEmail
+                    )
+                    if (userData != null) {
+                        call.respond(
+                            HttpStatusCode.Accepted,
+                            UserProfileClass(
+                                profile = userData
+                            )
+                        )
+                    }
+                    call.respond(
+                        HttpStatusCode.Unauthorized,
+                        ResponseMessage(
+                            message = "Failed authentication"
+                        )
+                    )
+                }
+            }
         }
         get("/") {
             call.respond(
@@ -103,14 +126,15 @@ fun Application.module() {
                 val jwtTokenResponse =
                     authenticator.generateJWT(email = verifiedDetails.email, name = verifiedDetails.name)
                 call.respond(
+                    HttpStatusCode.Accepted,
                     MessageResponseClass(
-                        200,
                         token = jwtTokenResponse,
                     )
                 )
             }
             call.respond(
-                MessageResponseClass(400, "failed the authentication.")
+                HttpStatusCode.Unauthorized,
+                ResponseMessage(message = "failed the authentication.")
             )
         }
         static(".well-known") {
