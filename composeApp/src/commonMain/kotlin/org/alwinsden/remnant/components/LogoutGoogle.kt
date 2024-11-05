@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Power
@@ -36,6 +38,7 @@ fun LogoutGoogle(iconColor: Long = 0xffffffff) {
                             nvvController.navigate(NavRouteClass.Home.route)
                         }
                     }
+                    .pointerHoverIcon(PointerIcon.Hand)
             )
         }
     }
