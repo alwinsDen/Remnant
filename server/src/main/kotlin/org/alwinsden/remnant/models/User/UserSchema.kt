@@ -13,6 +13,7 @@ class UserSchemaService(private val database: Database) {
         val name = varchar("name", length = 50)
         val email = varchar("email", length = 50)
         val state = integer(name = "state").default(1)
+        val demo_completed = bool(name = "demo_completed").default(false)
         override val primaryKey = PrimaryKey(id)
     }
 
@@ -32,6 +33,9 @@ class UserSchemaService(private val database: Database) {
                 }
                 if (Users.columns.none { it.name == "state" }) {
                     exec("alter table ${Users.tableName} add column state")
+                }
+                if (Users.columns.none { it.name == "demo_completed" }) {
+                    exec("alter table ${Users.tableName} add column demo_completed")
                 }
             }
             SchemaUtils.createMissingTablesAndColumns(Users)
