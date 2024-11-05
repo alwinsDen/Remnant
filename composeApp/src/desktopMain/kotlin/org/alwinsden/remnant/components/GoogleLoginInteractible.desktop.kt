@@ -23,7 +23,11 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.util.store.DataStoreFactory
 import com.google.api.client.util.store.FileDataStoreFactory
 import io.ktor.client.engine.okhttp.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import org.alwinsden.remnant.LocalNavController
+import org.alwinsden.remnant.NavRouteClass
 import org.alwinsden.remnant.animationUtils.rememberVideoStatePlayer
 import org.alwinsden.remnant.api_data_class.AuthPost
 import org.alwinsden.remnant.dataStore.coreComponent
@@ -74,7 +78,7 @@ fun signInWithGoogle(authCode: String?) {
                 val credential: Credential = flow.createAndStoreCredential(tokenResponse, "user")
                 //run test request post-access_token
                 val apiClient = ApiCentral(createHttpClient(OkHttp.create()))
-                CoroutineScope(Dispatchers.Default).launch {
+                runBlocking {
                     apiClient.authRequest(AuthPost(authMachine = "DESKTOP", authCode = credential.accessToken))
                         .onSuccess {
                             coreComponent.appPreferences.addUpdateAuthKey(jwtToken = it.token)
@@ -94,6 +98,7 @@ actual fun GoogleLoginInteractible() {
     var showAuthInputDialog by remember { mutableStateOf(false) }
     var authCode by remember { mutableStateOf(TextFieldValue("")) }
     val videoState = rememberVideoStatePlayer()
+    val nvvController = LocalNavController.current
     OutlinedButton(
         onClick = {
             showAuthInputDialog = true
@@ -148,6 +153,7 @@ actual fun GoogleLoginInteractible() {
                         if (authCode.text != "") {
                             showAuthInputDialog = false
                             signInWithGoogle(authCode.text)
+                            nvvController.navigate(NavRouteClass.EntryScreen1.route)
                         }
                     },
                     shape = RoundedCornerShape(20.dp),

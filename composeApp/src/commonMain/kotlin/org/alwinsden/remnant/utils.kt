@@ -1,7 +1,9 @@
 package org.alwinsden.remnant
 
+import androidx.compose.runtime.compositionLocalOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -18,6 +20,8 @@ open class RemnantAppViewModal : ViewModel() {
         )
     }
 }
+
+val LocalNavController = compositionLocalOf<NavHostController> { error("No NavController provided") }
 
 expect fun networkHost(): String
 

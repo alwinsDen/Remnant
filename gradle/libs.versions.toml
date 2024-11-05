@@ -13,6 +13,7 @@ androidx-lifecycle = "2.8.0"
 androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
 compose-plugin = "1.6.11"
+iconsLucide = "1.0.0"
 junit = "4.13.2"
 kotlin = "2.0.20"
 kotlinx-coroutines = "1.8.1"
@@ -29,6 +30,7 @@ androidx-startup = "1.2.0"
 
 [libraries]
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
+icons-lucide = { module = "com.composables:icons-lucide", version.ref = "iconsLucide" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

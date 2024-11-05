@@ -17,17 +17,19 @@ import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.Firebase
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import io.ktor.client.engine.okhttp.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.alwinsden.remnant.BuildConfig
+import org.alwinsden.remnant.LocalNavController
+import org.alwinsden.remnant.NavRouteClass
 import org.alwinsden.remnant.RemnantAppViewModal
 import org.alwinsden.remnant.api_data_class.AuthPost
 import org.alwinsden.remnant.dataStore.coreComponent
@@ -41,16 +43,17 @@ import remnant.composeapp.generated.resources.Res
 import remnant.composeapp.generated.resources.android_dark_rd_4x
 import javax.inject.Inject
 
-suspend fun signInWithGoogleIdToken(idToken: String, client: ApiCentral) {
+suspend fun signInWithGoogleIdToken(idToken: String, client: ApiCentral, nvvController: NavHostController) {
     val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
     val firebaseAuthResult = Firebase.auth.signInWithCredential(firebaseCredential).await()
     val userIdToken = firebaseAuthResult.user?.getIdToken(true)?.await()?.token
     if (userIdToken != null) {
-        CoroutineScope(Dispatchers.Default).launch {
+        runBlocking {
             client.authRequest(AuthPost(authCode = userIdToken, authMachine = "ANDROID"))
                 .onSuccess {
                     Log.e(NetworkLogCodes.ObtainedAuth.code, "Auth token obtained.")
                     coreComponent.appPreferences.addUpdateAuthKey(jwtToken = it.token)
+                    nvvController.navigate(NavRouteClass.EntryScreen1.route)
                 }
                 .onError {
                     Log.e(NetworkLogCodes.FailedAuth.code, "Failed the server authentication.")
@@ -60,14 +63,15 @@ suspend fun signInWithGoogleIdToken(idToken: String, client: ApiCentral) {
 }
 
 class RemnantViewModel @Inject constructor() : RemnantAppViewModal() {
-    fun onSignInWithGoogle(credential: Credential) {
+    fun onSignInWithGoogle(credential: Credential, nvvController: NavHostController) {
         launchCatching {
             if (credential is CustomCredential) {
                 val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                 signInWithGoogleIdToken(
                     googleIdTokenCredential.idToken,
                     client =
-                    ApiCentral(createHttpClient(OkHttp.create()))
+                    ApiCentral(createHttpClient(OkHttp.create())),
+                    nvvController = nvvController
                 )
             } else {
                 Log.e(NetworkLogCodes.FailedAuth.code, "Failed to obtain google-sign in code.")
@@ -82,6 +86,7 @@ actual fun GoogleLoginInteractible() {
     val coroutineScope = rememberCoroutineScope()
     val credentialManager = CredentialManager.create(context)
     val viewModel: RemnantViewModel = viewModel()
+    val nvvController = LocalNavController.current
     OutlinedButton(
         onClick = {
             val googleIdOption = GetGoogleIdOption.Builder()
@@ -97,7 +102,7 @@ actual fun GoogleLoginInteractible() {
                         request = request,
                         context = context,
                     )
-                    viewModel.onSignInWithGoogle(request.credential)
+                    viewModel.onSignInWithGoogle(request.credential, nvvController = nvvController)
                     Log.d(NetworkLogCodes.SuccessPing.code, "Credential obtained: ${request.credential}")
                 } catch (e: GetCredentialException) {
                     Log.d(NetworkLogCodes.FailedPing.code, e.message.orEmpty())

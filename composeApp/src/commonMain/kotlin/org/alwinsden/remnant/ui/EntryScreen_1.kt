@@ -1,6 +1,5 @@
 package org.alwinsden.remnant.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,20 +17,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import org.alwinsden.remnant.HomenajeFontFamily
-import org.alwinsden.remnant.InterFontFamily
-import org.alwinsden.remnant.JudsonFontFamily
-import org.alwinsden.remnant.NavRouteClass
+import org.alwinsden.remnant.*
 
 @Composable
-fun EntryScreen1(navController: NavController) {
+fun EntryScreen1() {
+    val nvvController = LocalNavController.current
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                color = Color(0xFF000000)
-            ),
     ) {
         Column(
             modifier = Modifier
@@ -56,7 +49,7 @@ fun EntryScreen1(navController: NavController) {
         }
         Button(
             onClick = {
-                navController.navigate(NavRouteClass.EntryScreen2.route)
+                nvvController.navigate(NavRouteClass.EntryScreen2.route)
             },
             modifier = Modifier
                 .align(Alignment.Center)

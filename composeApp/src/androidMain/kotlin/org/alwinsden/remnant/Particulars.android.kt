@@ -15,7 +15,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import org.jetbrains.compose.resources.painterResource
 import remnant.composeapp.generated.resources.*
 
@@ -24,8 +23,9 @@ actual fun getPlatformName(): String {
 }
 
 @Composable
-actual fun EntryScreen2Source(navController: NavController) {
+actual fun EntryScreen2Source() {
     val interactionSource = remember { MutableInteractionSource() }
+    val nvvController = LocalNavController.current
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -125,7 +125,7 @@ actual fun EntryScreen2Source(navController: NavController) {
                 modifier = Modifier
                     .clickable(
                         onClick = {
-                            navController.navigate(NavRouteClass.Home.route)
+                            nvvController.navigate(NavRouteClass.Home.route)
                         },
                         interactionSource = interactionSource,
                         indication = null

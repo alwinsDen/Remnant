@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.navigation.NavController
 import org.jetbrains.compose.resources.Font
 import remnant.composeapp.generated.resources.*
 
@@ -50,4 +49,4 @@ expect fun getPlatformName(): String
 //This is the general function for same Origin of the component from different platforms.
 //There are some android only functions.
 @Composable
-expect fun EntryScreen2Source(navController: NavController): Unit
+expect fun EntryScreen2Source(): Unit

@@ -43,6 +43,7 @@ kotlin {
             implementation(libs.navigation.compose)
             implementation(libs.bundles.ktor)
             implementation(libs.datastore.preferences.core)
+            implementation(libs.icons.lucide)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

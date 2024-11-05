@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import org.alwinsden.remnant.InterFontFamily
 import org.alwinsden.remnant.MatescFontFamily
 import org.alwinsden.remnant.components.GoogleLoginInteractible
@@ -20,16 +19,13 @@ import remnant.composeapp.generated.resources.Res
 import remnant.composeapp.generated.resources.kotlin_conf_25
 
 @Composable
-fun Home(navController: NavController) {
+fun Home() {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .background(
-                color = Color(0xFF000000)
-            )
     ) {
         Box(
             modifier = Modifier
