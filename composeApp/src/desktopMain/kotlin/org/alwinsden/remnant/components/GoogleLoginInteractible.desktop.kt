@@ -26,6 +26,7 @@ import io.ktor.client.engine.okhttp.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import org.alwinsden.remnant.HTTP_CALL_CLIENT
 import org.alwinsden.remnant.LocalNavController
 import org.alwinsden.remnant.NavRouteClass
 import org.alwinsden.remnant.animationUtils.rememberVideoStatePlayer
@@ -77,9 +78,8 @@ fun signInWithGoogle(authCode: String?) {
                     flow.newTokenRequest(authCode).setRedirectUri("urn:ietf:wg:oauth:2.0:oob").execute()
                 val credential: Credential = flow.createAndStoreCredential(tokenResponse, "user")
                 //run test request post-access_token
-                val apiClient = ApiCentral(createHttpClient(OkHttp.create()))
                 runBlocking {
-                    apiClient.authRequest(AuthPost(authMachine = "DESKTOP", authCode = credential.accessToken))
+                    HTTP_CALL_CLIENT.authRequest(AuthPost(authMachine = "DESKTOP", authCode = credential.accessToken))
                         .onSuccess {
                             coreComponent.appPreferences.addUpdateAuthKey(jwtToken = it.token)
                         }

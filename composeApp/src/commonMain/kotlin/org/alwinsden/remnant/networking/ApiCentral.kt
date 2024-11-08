@@ -9,6 +9,7 @@ import io.ktor.util.network.*
 import kotlinx.serialization.SerializationException
 import org.alwinsden.remnant.api_data_class.AuthPost
 import org.alwinsden.remnant.api_data_class.MessageResponseClass
+import org.alwinsden.remnant.api_data_class.ResponseMessage
 import org.alwinsden.remnant.api_data_class.UserProfileClass
 import org.alwinsden.remnant.dataStore.coreComponent
 import org.alwinsden.remnant.networkHost
@@ -85,6 +86,26 @@ class ApiCentral(
             Result.Success(response.body())
         } else {
             Result.Error(NetworkError.UNAUTHORIZED)
+        }
+    }
+
+    suspend fun demoCompletedPOSTRequest(): Result<ResponseMessage, NetworkError>{
+        val jwtTokenValue = coreComponent.appPreferences.doesAuthKeyExist()
+        val response: HttpResponse = try {
+            httpClient.post(
+                "$serverEndPoint/completeDemo",
+            ) {
+                headers {
+                    append("Authorization", "Bearer $jwtTokenValue")
+                }
+            }
+        } catch (e: AuthenticationException) {
+            return Result.Error(NetworkError.UNAUTHORIZED)
+        }
+        return if (response.status == HttpStatusCode.Accepted) {
+            Result.Success(response.body())
+        } else {
+            Result.Error(NetworkError.BAD_REQUEST)
         }
     }
 }

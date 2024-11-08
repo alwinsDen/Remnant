@@ -18,7 +18,7 @@ class OpenApiPOST(
     private val applicationConfiguration: ApplicationConfig,
     private val jwkProvider: JwkProvider
 ) {
-    fun Route.generateJwtAuth() {
+    suspend fun Route.generateJwtAuth() {
         post("/auth") {
             val req = call.receive<AuthPost>()
             val authenticator =

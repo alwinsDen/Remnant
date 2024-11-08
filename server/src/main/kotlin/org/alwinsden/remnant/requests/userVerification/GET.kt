@@ -13,8 +13,8 @@ import org.alwinsden.remnant.models.User.UserSchemaService
 import org.jetbrains.exposed.sql.Database
 
 
-class UserVericationGET(private val database: Database) {
-    fun Route.jwtVerification() {
+class UserVerificationGET(private val database: Database) {
+    suspend fun Route.jwtVerification() {
         get("/generate_jwt") {
             val principal = call.principal<JWTPrincipal>()
             val emailIdentifier = principal!!.payload.getClaim("email").asString()
@@ -24,30 +24,28 @@ class UserVericationGET(private val database: Database) {
         }
     }
 
-    fun Route.getUserProfile() {
+    suspend fun Route.getUserProfile() {
         get("/profile") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal!!.payload.getClaim("id").asInt()
             val userInstance = UserSchemaService(database)
-            runBlocking {
-                val userData = userInstance.readUserProfileId(
-                    id = userId
-                )
-                if (userData != null) {
-                    call.respond(
-                        HttpStatusCode.Accepted,
-                        UserProfileClass(
-                            profile = userData
-                        )
-                    )
-                }
+            val userData = userInstance.readUserProfileId(
+                id = userId
+            )
+            if (userData != null) {
                 call.respond(
-                    HttpStatusCode.Unauthorized,
-                    ResponseMessage(
-                        message = "User doesn't exist."
+                    HttpStatusCode.Accepted,
+                    UserProfileClass(
+                        profile = userData
                     )
                 )
             }
+            call.respond(
+                HttpStatusCode.Unauthorized,
+                ResponseMessage(
+                    message = "User doesn't exist."
+                )
+            )
         }
     }
 }

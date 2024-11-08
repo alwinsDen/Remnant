@@ -12,13 +12,17 @@ import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.alwinsden.remnant.controlUtils.configurationFirebase
 import org.alwinsden.remnant.models.User.UserSchemaService
 import org.alwinsden.remnant.models.configureDatabase
+import org.alwinsden.remnant.requests.generalManagement.GeneralManagementPOST
 import org.alwinsden.remnant.requests.openApi.OpenApiGET
 import org.alwinsden.remnant.requests.openApi.OpenApiPOST
-import org.alwinsden.remnant.requests.userVerification.UserVericationGET
+import org.alwinsden.remnant.requests.userVerification.UserVerificationGET
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -48,7 +52,8 @@ fun Application.module() {
         database = database,
         applicationConfiguration = applicationConfiguration,
     )
-    val userVerificationAPI_GET = UserVericationGET(database)
+    val userVerificationAPI_GET = UserVerificationGET(database)
+    val GeneralManagementAPI_POST = GeneralManagementPOST(database)
 
     //installations
     install(ContentNegotiation) {
@@ -69,7 +74,7 @@ fun Application.module() {
                     &&
                     credential.payload.getClaim("name").asString() != ""
                     &&
-                    credential.payload.getClaim("id").asString()!=""
+                    credential.payload.getClaim("id").asString() != ""
                 ) {
                     JWTPrincipal(credential.payload)
                 } else {
@@ -84,15 +89,26 @@ fun Application.module() {
     routing {
         authenticate("auth-jwt") {
             with(userVerificationAPI_GET) {
-                jwtVerification()
-                getUserProfile()
+                CoroutineScope(Dispatchers.IO).launch {
+                    jwtVerification()
+                    getUserProfile()
+                }
+            }
+            with(GeneralManagementAPI_POST){
+                CoroutineScope(Dispatchers.IO).launch {
+                    completeDemoState()
+                }
             }
         }
         with(openAPI_GET) {
-            serverStatusCheck()
+            CoroutineScope(Dispatchers.IO).launch {
+                serverStatusCheck()
+            }
         }
         with(openAPI_POST) {
-            generateJwtAuth()
+            CoroutineScope(Dispatchers.IO).launch {
+                generateJwtAuth()
+            }
         }
         static(".well-known") {
             staticRootFolder = File("server/certs")
