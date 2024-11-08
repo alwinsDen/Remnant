@@ -23,18 +23,12 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.Firebase
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
-import io.ktor.client.engine.okhttp.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
-import org.alwinsden.remnant.BuildConfig
-import org.alwinsden.remnant.LocalNavController
-import org.alwinsden.remnant.NavRouteClass
-import org.alwinsden.remnant.RemnantAppViewModal
+import org.alwinsden.remnant.*
 import org.alwinsden.remnant.api_data_class.AuthPost
 import org.alwinsden.remnant.dataStore.coreComponent
-import org.alwinsden.remnant.networking.ApiCentral
-import org.alwinsden.remnant.networking.createHttpClient
 import org.alwinsden.remnant.networking_utils.NetworkLogCodes
 import org.alwinsden.remnant.networking_utils.onError
 import org.alwinsden.remnant.networking_utils.onSuccess
@@ -43,13 +37,13 @@ import remnant.composeapp.generated.resources.Res
 import remnant.composeapp.generated.resources.android_dark_rd_4x
 import javax.inject.Inject
 
-suspend fun signInWithGoogleIdToken(idToken: String, client: ApiCentral, nvvController: NavHostController) {
+suspend fun signInWithGoogleIdToken(idToken: String, nvvController: NavHostController) {
     val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
     val firebaseAuthResult = Firebase.auth.signInWithCredential(firebaseCredential).await()
     val userIdToken = firebaseAuthResult.user?.getIdToken(true)?.await()?.token
     if (userIdToken != null) {
         runBlocking {
-            client.authRequest(AuthPost(authCode = userIdToken, authMachine = "ANDROID"))
+            HTTP_CALL_CLIENT.authRequest(AuthPost(authCode = userIdToken, authMachine = "ANDROID"))
                 .onSuccess {
                     coreComponent.appPreferences.addUpdateAuthKey(jwtToken = it.token)
                     nvvController.navigate(NavRouteClass.EntryScreen1.route)
@@ -68,8 +62,6 @@ class RemnantViewModel @Inject constructor() : RemnantAppViewModal() {
                 val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                 signInWithGoogleIdToken(
                     googleIdTokenCredential.idToken,
-                    client =
-                    ApiCentral(createHttpClient(OkHttp.create())),
                     nvvController = nvvController
                 )
             } else {
