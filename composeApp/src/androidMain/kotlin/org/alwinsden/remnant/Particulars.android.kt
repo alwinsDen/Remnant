@@ -125,7 +125,7 @@ actual fun EntryScreen2Source() {
                 modifier = Modifier
                     .clickable(
                         onClick = {
-                            nvvController.navigate(NavRouteClass.Home.route)
+                            nvvController.navigate(NavRouteClass.EntryScreen3.route)
                         },
                         interactionSource = interactionSource,
                         indication = null

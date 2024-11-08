@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import org.alwinsden.remnant.components.LogoutGoogle
 import org.alwinsden.remnant.controlThemes.BackgroundTheme
 import org.alwinsden.remnant.ui.EntryScreen1
+import org.alwinsden.remnant.ui.EntryScreen3
 import org.alwinsden.remnant.ui.Home
 
 
@@ -81,6 +82,12 @@ fun RoutingControl() {
             composable(route = NavRouteClass.EntryScreen2.route) {
                 BackgroundTheme {
                     EntryScreen2Source()
+                    LogoutGoogle(iconColor = 0xff000000)
+                }
+            }
+            composable(route = NavRouteClass.EntryScreen3.route) {
+                BackgroundTheme(color = 0xffffffff) {
+                    EntryScreen3()
                     LogoutGoogle(iconColor = 0xff000000)
                 }
             }

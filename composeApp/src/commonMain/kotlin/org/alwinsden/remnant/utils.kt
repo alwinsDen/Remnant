@@ -33,3 +33,5 @@ fun returnNavClassOnJwt(): String = runBlocking {
         return@runBlocking NavRouteClass.Home.route
     }
 }
+
+expect val Screen3PngCoordinates: List<Pair<Float, Float>>

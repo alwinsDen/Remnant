@@ -2,6 +2,7 @@ package org.alwinsden.remnant
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +24,7 @@ actual fun getPlatformName(): String {
 @Preview
 @Composable
 actual fun EntryScreen2Source() {
+    val nvvController = LocalNavController.current
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize(),
@@ -42,7 +44,10 @@ actual fun EntryScreen2Source() {
             text = "next ->",
             modifier = Modifier
                 .align(Alignment.Center)
-                .offset(y = 110.dp),
+                .offset(y = 110.dp)
+                .clickable {
+                    nvvController.navigate(NavRouteClass.EntryScreen3.route)
+                },
             color = Color(0xFF000000),
             fontFamily = InterFontFamily,
             fontWeight = FontWeight.Medium,
