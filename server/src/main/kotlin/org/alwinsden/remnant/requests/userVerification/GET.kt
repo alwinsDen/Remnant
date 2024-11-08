@@ -27,11 +27,11 @@ class UserVericationGET(private val database: Database) {
     fun Route.getUserProfile() {
         get("/profile") {
             val principal = call.principal<JWTPrincipal>()
-            val userEmail = principal!!.payload.getClaim("email").asString()
+            val userId = principal!!.payload.getClaim("id").asInt()
             val userInstance = UserSchemaService(database)
             runBlocking {
-                val userData = userInstance.readEmail(
-                    email = userEmail
+                val userData = userInstance.readUserProfileId(
+                    id = userId
                 )
                 if (userData != null) {
                     call.respond(
@@ -44,7 +44,7 @@ class UserVericationGET(private val database: Database) {
                 call.respond(
                     HttpStatusCode.Unauthorized,
                     ResponseMessage(
-                        message = "Failed authentication"
+                        message = "User doesn't exist."
                     )
                 )
             }

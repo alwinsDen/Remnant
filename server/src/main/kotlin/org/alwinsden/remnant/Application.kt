@@ -68,6 +68,8 @@ fun Application.module() {
                     credential.payload.getClaim("email").asString() != ""
                     &&
                     credential.payload.getClaim("name").asString() != ""
+                    &&
+                    credential.payload.getClaim("id").asString()!=""
                 ) {
                     JWTPrincipal(credential.payload)
                 } else {

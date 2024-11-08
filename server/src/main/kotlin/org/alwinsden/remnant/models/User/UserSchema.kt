@@ -2,6 +2,7 @@ package org.alwinsden.remnant.models.User
 
 import kotlinx.coroutines.Dispatchers
 import org.alwinsden.remnant.api_data_class.ExposedUser
+import org.alwinsden.remnant.api_data_class.ExposedUserWithId
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -51,13 +52,26 @@ class UserSchemaService(private val database: Database) {
         }[Users.id]
     }
 
-    suspend fun readEmail(email: String): ExposedUser? {
+    suspend fun readEmail(email: String): ExposedUserWithId? {
         return dbQuery {
             Users.selectAll()
                 .where { Users.email eq email }
                 .map {
-                    ExposedUser(
-                        it[Users.name], it[Users.email], it[Users.demo_completed]
+                    ExposedUserWithId(
+                        it[Users.id], it[Users.name], it[Users.email], it[Users.demo_completed]
+                    )
+                }
+                .singleOrNull()
+        }
+    }
+
+    suspend fun readUserProfileId(id: Int): ExposedUserWithId? {
+        return dbQuery {
+            Users.selectAll()
+                .where { Users.id eq id }
+                .map {
+                    ExposedUserWithId(
+                        it[Users.id], it[Users.name], it[Users.email], it[Users.demo_completed]
                     )
                 }
                 .singleOrNull()
