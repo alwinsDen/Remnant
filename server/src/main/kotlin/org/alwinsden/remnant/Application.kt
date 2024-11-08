@@ -10,15 +10,15 @@ import io.ktor.server.engine.*
 import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
-import org.alwinsden.remnant.api_data_class.*
 import org.alwinsden.remnant.controlUtils.configurationFirebase
 import org.alwinsden.remnant.models.User.UserSchemaService
 import org.alwinsden.remnant.models.configureDatabase
+import org.alwinsden.remnant.requests.openApi.OpenApiGET
+import org.alwinsden.remnant.requests.openApi.OpenApiPOST
+import org.alwinsden.remnant.requests.userVerification.UserVericationGET
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -40,6 +40,15 @@ fun Application.module() {
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
         .build()
+
+    //Routing class
+    val openAPI_GET = OpenApiGET(database)
+    val openAPI_POST = OpenApiPOST(
+        jwkProvider = jwkProvider,
+        database = database,
+        applicationConfiguration = applicationConfiguration,
+    )
+    val userVerificationAPI_GET = UserVericationGET(database)
 
     //installations
     install(ContentNegotiation) {
@@ -72,70 +81,16 @@ fun Application.module() {
     }
     routing {
         authenticate("auth-jwt") {
-            get("/generate_jwt") {
-                val principal = call.principal<JWTPrincipal>()
-                val emailIdentifier = principal!!.payload.getClaim("email").asString()
-                val username = principal.payload.getClaim("name").asString()
-                val expiresAt = principal.expiresAt?.time?.minus(System.currentTimeMillis())
-                call.respondText("Hello $emailIdentifier with $username, token expires at $expiresAt")
-            }
-            get("/profile") {
-                val principal = call.principal<JWTPrincipal>()
-                val userEmail = principal!!.payload.getClaim("email").asString()
-                val userInstance = UserSchemaService(database)
-                runBlocking {
-                    val userData = userInstance.readEmail(
-                        email = userEmail
-                    )
-                    if (userData != null) {
-                        call.respond(
-                            HttpStatusCode.Accepted,
-                            UserProfileClass(
-                                profile = userData
-                            )
-                        )
-                    }
-                    call.respond(
-                        HttpStatusCode.Unauthorized,
-                        ResponseMessage(
-                            message = "Failed authentication"
-                        )
-                    )
-                }
+            with(userVerificationAPI_GET) {
+                jwtVerification()
+                getUserProfile()
             }
         }
-        get("/") {
-            call.respond(
-                TestRequest(
-                    "Pinging at this port",
-                    SERVER_PORT
-                )
-            )
+        with(openAPI_GET) {
+            serverStatusCheck()
         }
-        post("/auth") {
-            val req = call.receive<AuthPost>()
-            val authenticator =
-                Authenticator(
-                    applicationConfig = applicationConfiguration,
-                    jwkProvider = jwkProvider,
-                    database = database
-                )
-            val verifiedDetails =
-                authenticator.generalAuthenticator(authMachine = req.authMachine, accessToken = req.authCode)
-            if (verifiedDetails != null) {
-                val jwtTokenResponse =
-                    authenticator.generateJWT(email = verifiedDetails.email, name = verifiedDetails.name)
-                call.respond(
-                    HttpStatusCode.Accepted,
-                    MessageResponseClass(
-                        token = jwtTokenResponse,
-                    )
-                )
-            }
-            call.respond(
-                HttpStatusCode.Unauthorized,
-                ResponseMessage(message = "failed the authentication.")
-            )
+        with(openAPI_POST) {
+            generateJwtAuth()
         }
         static(".well-known") {
             staticRootFolder = File("server/certs")
