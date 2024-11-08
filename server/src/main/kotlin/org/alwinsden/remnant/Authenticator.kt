@@ -120,7 +120,7 @@ class Authenticator(
             .withClaim("email", email)
             .withClaim("name", name)
             .withClaim("id", id)
-            .withExpiresAt(Date(System.currentTimeMillis() + 600000))
+            .withExpiresAt(Date(System.currentTimeMillis() + 86_400_000))
             .sign(Algorithm.RSA256(publicKey as RSAPublicKey, privateKey as RSAPrivateKey))
         return token
     }

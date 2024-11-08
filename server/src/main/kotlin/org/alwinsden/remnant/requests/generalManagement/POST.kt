@@ -6,7 +6,6 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import okhttp3.Response
 import org.alwinsden.remnant.api_data_class.ResponseMessage
 import org.alwinsden.remnant.models.User.UserSchemaService
 import org.jetbrains.exposed.sql.Database
@@ -18,7 +17,6 @@ class GeneralManagementPOST(private val database: Database) {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal!!.payload.getClaim("id").asInt()
             val userInstance = UserSchemaService(database)
-            println("THIS API WAS ALWAYS CALLED.")
             val userData = userInstance.readUserProfileId(
                 id = userId
             ).let {
