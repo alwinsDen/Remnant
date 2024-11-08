@@ -13,10 +13,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.ktor.client.engine.okhttp.*
-import org.alwinsden.remnant.InterFontFamily
-import org.alwinsden.remnant.LocalNavController
-import org.alwinsden.remnant.MatescFontFamily
-import org.alwinsden.remnant.NavRouteClass
+import org.alwinsden.remnant.*
 import org.alwinsden.remnant.components.GoogleLoginInteractible
 import org.alwinsden.remnant.dataStore.coreComponent
 import org.alwinsden.remnant.networking.ApiCentral
@@ -29,13 +26,12 @@ import remnant.composeapp.generated.resources.kotlin_conf_25
 
 @Composable
 fun Home() {
-    val client = ApiCentral(createHttpClient(OkHttp.create()))
     var isJwtVerificationLoading by remember { mutableStateOf(true) }
     val nvvController = LocalNavController.current
     LaunchedEffect(Unit) {
         val jwtTokenValue = coreComponent.appPreferences.doesAuthKeyExist()
         if (jwtTokenValue.isNotEmpty()) {
-            client.profileGetRequest()
+            HTTP_CALL_CLIENT.profileGetRequest()
                 .onSuccess {
                     nvvController.navigate(NavRouteClass.EntryScreen1.route)
                 }

@@ -10,6 +10,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.alwinsden.remnant.api_data_class.ExposedUser
+import org.alwinsden.remnant.api_data_class.ExposedUserWithId
 import org.alwinsden.remnant.api_data_class.GCloudAuthResult
 import org.alwinsden.remnant.models.User.UserSchemaService
 import org.jetbrains.exposed.sql.Database
@@ -25,7 +26,7 @@ class Authenticator(
     private val database: Database
 ) {
 
-    fun generalAuthenticator(accessToken: String, authMachine: String): ExposedUser? {
+    fun generalAuthenticator(accessToken: String, authMachine: String): ExposedUserWithId? {
         if (authMachine == "DESKTOP") {
             return desktopAuth(accessToken = accessToken)
         } else if (authMachine == "ANDROID") {
@@ -34,7 +35,7 @@ class Authenticator(
         return null
     }
 
-    private fun desktopAuth(accessToken: String): ExposedUser? {
+    private fun desktopAuth(accessToken: String): ExposedUserWithId? {
         val client = OkHttpClient()
         val userInstance = UserSchemaService(database)
         val request = Request.Builder()
@@ -53,17 +54,17 @@ class Authenticator(
 
                     //adds the user if the user doesn't exist in the Remnant user DB.
                     if (userExists == null && userDetails != null) {
-                        userInstance.create(
+                        val userId = userInstance.create(
                             ExposedUser(
                                 email = userDetails.email, name = userDetails.name
                             )
                         )
-                        ExposedUser(
-                            email = userDetails.email, name = userDetails.name
+                        ExposedUserWithId(
+                            email = userDetails.email, name = userDetails.name, id = userId
                         )
                     } else if (userExists != null) {
-                        ExposedUser(
-                            email = userExists.email, name = userExists.name
+                        ExposedUserWithId(
+                            email = userExists.email, name = userExists.name, id = userExists.id
                         )
                     } else {
                         null
@@ -76,7 +77,7 @@ class Authenticator(
         return null
     }
 
-    private fun androidAuth(accessToken: String): ExposedUser? {
+    private fun androidAuth(accessToken: String): ExposedUserWithId? {
         try {
             val decodedJWT = FirebaseAuth.getInstance().verifyIdToken(accessToken)
             val name = decodedJWT.name
@@ -85,17 +86,17 @@ class Authenticator(
             return runBlocking {
                 val userExists = userInstance.readEmail(email = email)
                 if (userExists == null) {
-                    userInstance.create(
+                    val userId = userInstance.create(
                         ExposedUser(
                             email = email, name = name
                         )
                     )
-                    ExposedUser(
-                        email = email, name = name
+                    ExposedUserWithId(
+                        email = email, name = name, id = userId
                     )
                 } else {
-                    ExposedUser(
-                        email = email, name = name
+                    ExposedUserWithId(
+                        email = userExists.email, name = userExists.name, id = userExists.id
                     )
                 }
             }
@@ -105,7 +106,7 @@ class Authenticator(
         }
     }
 
-    fun generateJWT(email: String, name: String): String {
+    fun generateJWT(email: String, name: String, id: Int): String {
         val privateKeyString = applicationConfig.property("jwt.privateKey").getString()
         val audience = applicationConfig.property("jwt.audience").getString()
         val issuer = applicationConfig.property("jwt.issuer").getString()
@@ -118,7 +119,8 @@ class Authenticator(
             .withIssuer(issuer)
             .withClaim("email", email)
             .withClaim("name", name)
-            .withExpiresAt(Date(System.currentTimeMillis() + 600000))
+            .withClaim("id", id)
+            .withExpiresAt(Date(System.currentTimeMillis() + 86_400_000))
             .sign(Algorithm.RSA256(publicKey as RSAPublicKey, privateKey as RSAPrivateKey))
         return token
     }

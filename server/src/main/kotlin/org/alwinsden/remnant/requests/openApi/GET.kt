@@ -8,7 +8,7 @@ import org.alwinsden.remnant.api_data_class.TestRequest
 import org.jetbrains.exposed.sql.Database
 
 class OpenApiGET(private val database: Database) {
-    fun Route.serverStatusCheck() {
+    suspend fun Route.serverStatusCheck() {
         get("/") {
             call.respond(
                 TestRequest(

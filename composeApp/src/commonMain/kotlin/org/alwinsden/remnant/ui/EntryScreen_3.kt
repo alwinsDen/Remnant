@@ -2,6 +2,7 @@ package org.alwinsden.remnant.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +13,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.alwinsden.remnant.HTTP_CALL_CLIENT
 import org.alwinsden.remnant.InterFontFamily
 import org.alwinsden.remnant.JudsonFontFamily
 import org.alwinsden.remnant.Screen3PngCoordinates
@@ -90,7 +95,12 @@ fun EntryScreen3() {
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .offset(y = 35.dp),
+                    .offset(y = 35.dp)
+                    .clickable {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            HTTP_CALL_CLIENT.demoCompletedPOSTRequest()
+                        }
+                    }
             )
         }
     }
