@@ -87,6 +87,11 @@ fun Application.module() {
         }
     }
     routing {
+        //TODO: sometimes http://localhost:8080/.well-known/jwks.json is not being served. Look for concurrency issues.
+        static(".well-known") {
+            staticRootFolder = File("server/certs")
+            file("jwks.json")
+        }
         authenticate("auth-jwt") {
             with(userVerificationAPI_GET) {
                 CoroutineScope(Dispatchers.IO).launch {
@@ -94,7 +99,7 @@ fun Application.module() {
                     getUserProfile()
                 }
             }
-            with(GeneralManagementAPI_POST){
+            with(GeneralManagementAPI_POST) {
                 CoroutineScope(Dispatchers.IO).launch {
                     completeDemoState()
                 }
@@ -109,10 +114,6 @@ fun Application.module() {
             CoroutineScope(Dispatchers.IO).launch {
                 generateJwtAuth()
             }
-        }
-        static(".well-known") {
-            staticRootFolder = File("server/certs")
-            file("jwks.json")
         }
     }
 }
