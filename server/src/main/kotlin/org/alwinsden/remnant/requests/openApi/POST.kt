@@ -31,7 +31,12 @@ class OpenApiPOST(
                 authenticator.generalAuthenticator(authMachine = req.authMachine, accessToken = req.authCode)
             if (verifiedDetails != null) {
                 val jwtTokenResponse =
-                    authenticator.generateJWT(email = verifiedDetails.email, name = verifiedDetails.name, id = verifiedDetails.id)
+                    authenticator.generateJWT(
+                        email = verifiedDetails.email,
+                        name = verifiedDetails.name,
+                        id = verifiedDetails.id
+                    )
+                println("JWT TOKEN: $jwtTokenResponse")
                 call.respond(
                     HttpStatusCode.Accepted,
                     MessageResponseClass(

@@ -17,7 +17,15 @@ data class GCloudAuthResult(
 data class ExposedUser(val name: String, val email: String, val demo_completed: Boolean? = false)
 
 @Serializable
-data class ExposedUserWithId(val id: Int, val name: String, val email: String, val demo_completed: Boolean? = false)
+data class ExposedUserWithId(
+    val id: Int,
+    val name: String,
+    val email: String,
+    val state: Int,
+    val gender: String,
+    val city: String? = null,
+    val demo_completed: Boolean? = false
+)
 
 @Serializable
 data class UserProfileClass(

@@ -122,6 +122,7 @@ actual fun EntryScreen2Source() {
                 color = Color(0xFF000000),
                 fontFamily = InterFontFamily,
                 fontWeight = FontWeight.Medium,
+                fontSize = 18.sp,
                 modifier = Modifier
                     .clickable(
                         onClick = {

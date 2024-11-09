@@ -54,17 +54,29 @@ class Authenticator(
 
                     //adds the user if the user doesn't exist in the Remnant user DB.
                     if (userExists == null && userDetails != null) {
-                        val userId = userInstance.create(
+                        val userDetailsFromDB = userInstance.create(
                             ExposedUser(
                                 email = userDetails.email, name = userDetails.name
                             )
                         )
                         ExposedUserWithId(
-                            email = userDetails.email, name = userDetails.name, id = userId
+                            userDetailsFromDB.id,
+                            name = userDetailsFromDB.name,
+                            userDetailsFromDB.email,
+                            userDetailsFromDB.state,
+                            userDetailsFromDB.gender,
+                            userDetailsFromDB.city,
+                            userDetailsFromDB.demo_completed
                         )
                     } else if (userExists != null) {
                         ExposedUserWithId(
-                            email = userExists.email, name = userExists.name, id = userExists.id
+                            userExists.id,
+                            name = userExists.name,
+                            userExists.email,
+                            userExists.state,
+                            userExists.gender,
+                            userExists.city,
+                            userExists.demo_completed
                         )
                     } else {
                         null
@@ -86,17 +98,29 @@ class Authenticator(
             return runBlocking {
                 val userExists = userInstance.readEmail(email = email)
                 if (userExists == null) {
-                    val userId = userInstance.create(
+                    val userDetailsFromDB = userInstance.create(
                         ExposedUser(
                             email = email, name = name
                         )
                     )
                     ExposedUserWithId(
-                        email = email, name = name, id = userId
+                        userDetailsFromDB.id,
+                        name = userDetailsFromDB.name,
+                        userDetailsFromDB.email,
+                        userDetailsFromDB.state,
+                        userDetailsFromDB.gender,
+                        userDetailsFromDB.city,
+                        userDetailsFromDB.demo_completed
                     )
                 } else {
                     ExposedUserWithId(
-                        email = userExists.email, name = userExists.name, id = userExists.id
+                        userExists.id,
+                        name = userExists.name,
+                        userExists.email,
+                        userExists.state,
+                        userExists.gender,
+                        userExists.city,
+                        userExists.demo_completed
                     )
                 }
             }

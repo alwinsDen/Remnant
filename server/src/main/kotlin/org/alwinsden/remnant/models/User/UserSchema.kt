@@ -3,6 +3,7 @@ package org.alwinsden.remnant.models.User
 import kotlinx.coroutines.Dispatchers
 import org.alwinsden.remnant.api_data_class.ExposedUser
 import org.alwinsden.remnant.api_data_class.ExposedUserWithId
+import org.alwinsden.remnant.enum_class.GenderEnum
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -14,9 +15,21 @@ class UserSchemaService(private val database: Database) {
         val name = varchar("name", length = 50)
         val email = varchar("email", length = 50)
         val state = integer(name = "state").default(1)
+        val gender = integer(name = "gender").default(GenderEnum.NOT_SPECIFIED.value)
+        val city = varchar("city", length = 50).nullable()
         val demo_completed = bool(name = "demo_completed").default(false)
         override val primaryKey = PrimaryKey(id)
     }
+
+    fun ResultRow.toExposedUserWithId() = ExposedUserWithId(
+        this[Users.id],
+        this[Users.name],
+        this[Users.email],
+        this[Users.state],
+        gender = GenderEnum.fromValue(this[Users.gender])!!.displayName,
+        this[Users.city],
+        this[Users.demo_completed]
+    )
 
     init {
         transaction(database) {
@@ -35,6 +48,12 @@ class UserSchemaService(private val database: Database) {
                 if (Users.columns.none { it.name == "state" }) {
                     exec("alter table ${Users.tableName} add column state")
                 }
+                if (Users.columns.none { it.name == "gender" }) {
+                    exec("alter table ${Users.tableName} add column gender")
+                }
+                if (Users.columns.none { it.name == "city" }) {
+                    exec("alter table ${Users.tableName} add column city")
+                }
                 if (Users.columns.none { it.name == "demo_completed" }) {
                     exec("alter table ${Users.tableName} add column demo_completed")
                 }
@@ -45,11 +64,22 @@ class UserSchemaService(private val database: Database) {
 
     //related User operations
     suspend fun <T> dbQuery(block: suspend () -> T): T = newSuspendedTransaction(Dispatchers.IO) { block() }
-    suspend fun create(user: ExposedUser): Int = dbQuery {
+
+    /**
+     * Creates a new user in the database using the provided `ExposedUser` object and returns the newly created user with an ID.
+     *
+     * @param user The user information to be added, provided as an `ExposedUser` object.
+     * @return The newly created user with an ID, returned as an `ExposedUserWithId` object.
+     */
+    suspend fun create(user: ExposedUser): ExposedUserWithId = dbQuery {
         Users.insert {
             it[name] = user.name
             it[email] = user.email
-        }[Users.id]
+        }
+        Users.selectAll()
+            .where { Users.email eq user.email }
+            .map { it.toExposedUserWithId() }
+            .single()
     }
 
     suspend fun readEmail(email: String): ExposedUserWithId? {
@@ -57,22 +87,24 @@ class UserSchemaService(private val database: Database) {
             Users.selectAll()
                 .where { Users.email eq email }
                 .map {
-                    ExposedUserWithId(
-                        it[Users.id], it[Users.name], it[Users.email], it[Users.demo_completed]
-                    )
+                    it.toExposedUserWithId()
                 }
                 .singleOrNull()
         }
     }
 
+    /**
+     * Reads the user profile ID from the database.
+     *
+     * @param id The ID of the user whose profile is to be read.
+     * @return The user profile with the given ID, or null if no such user exists.
+     */
     suspend fun readUserProfileId(id: Int): ExposedUserWithId? {
         return dbQuery {
             Users.selectAll()
                 .where { Users.id eq id }
                 .map {
-                    ExposedUserWithId(
-                        it[Users.id], it[Users.name], it[Users.email], it[Users.demo_completed]
-                    )
+                    it.toExposedUserWithId()
                 }
                 .singleOrNull()
         }
