@@ -44,7 +44,7 @@ fun EntryScreen1() {
                 textAlign = TextAlign.Center,
                 color = Color(0xFFFFFFFF),
                 fontFamily = JudsonFontFamily,
-                fontSize = 22.sp
+                fontSize = 24.sp
             )
         }
         Button(
@@ -59,7 +59,8 @@ fun EntryScreen1() {
             Text(
                 text = "next ->",
                 color = Color(0xFFFFFFFF),
-                fontFamily = InterFontFamily
+                fontFamily = InterFontFamily,
+                fontSize = 18.sp
             )
         }
     }
