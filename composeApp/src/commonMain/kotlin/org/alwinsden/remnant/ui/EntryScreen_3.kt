@@ -5,7 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.alwinsden.remnant.HTTP_CALL_CLIENT
 import org.alwinsden.remnant.InterFontFamily
@@ -25,9 +26,36 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import remnant.composeapp.generated.resources.*
 
+//this is the suspended fade-in-out animation for the loader.
+suspend fun animationFadeInFadeOut(onUpdate: (Float) -> Unit) {
+    while (true) {
+        repeat(10) {
+            onUpdate(0.1f * (it + 1))
+            delay(50)
+        }
+        delay(300)
+        repeat(10) {
+            onUpdate(1f - 0.1f * (it + 1))
+            delay(50)
+        }
+        delay(300)
+    }
+}
+
 @Preview
 @Composable
 fun EntryScreen3() {
+    var runLoadingOpacity by remember { mutableStateOf(false) }
+    var opacityValue by remember { mutableStateOf(0f) }
+    LaunchedEffect(runLoadingOpacity) {
+        if (runLoadingOpacity) {
+            animationFadeInFadeOut {
+                opacityValue = it
+            }
+        } else {
+            opacityValue = 0f
+        }
+    }
     val resourceListing = listOf<DrawableResource>(
         Res.drawable.Frame_2,
         Res.drawable.Frame_3,
@@ -87,21 +115,39 @@ fun EntryScreen3() {
                 textAlign = TextAlign.Center,
                 fontFamily = JudsonFontFamily,
             )
-            Text(
-                text = "explore ->",
-                color = Color(0xff000000),
-                fontFamily = InterFontFamily,
-                fontSize = (16.5).sp,
-                fontWeight = FontWeight.Medium,
+            Box(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .offset(y = 35.dp)
-                    .clickable {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            HTTP_CALL_CLIENT.demoCompletedPOSTRequest()
+                    .offset(y = 40.dp),
+            ) {
+                Text(
+                    text = "explore ->",
+                    color = Color(0xff000000),
+                    fontFamily = InterFontFamily,
+                    fontSize = (16.5).sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier
+                        .clickable {
+                            runLoadingOpacity = true
+                            CoroutineScope(Dispatchers.IO).launch {
+                                HTTP_CALL_CLIENT.demoCompletedPOSTRequest()
+                                runLoadingOpacity = false
+                            }
                         }
-                    }
-            )
+                )
+                Text(
+                    text = "syncing...",
+                    color = Color(0xff000000).copy(alpha = opacityValue),
+                    fontFamily = InterFontFamily,
+                    fontSize = (12).sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .offset(
+                            y = 20.dp
+                        )
+                )
+            }
         }
     }
 }
