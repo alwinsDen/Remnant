@@ -1,4 +1,4 @@
-package org.alwinsden.remnant.ui
+package org.alwinsden.remnant.ui.DemoScreens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

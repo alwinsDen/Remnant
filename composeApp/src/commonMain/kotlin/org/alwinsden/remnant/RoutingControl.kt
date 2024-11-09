@@ -12,8 +12,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.alwinsden.remnant.components.LogoutGoogle
 import org.alwinsden.remnant.controlThemes.BackgroundTheme
-import org.alwinsden.remnant.ui.EntryScreen1
-import org.alwinsden.remnant.ui.EntryScreen3
+import org.alwinsden.remnant.ui.DemoScreens.EntryScreen1
+import org.alwinsden.remnant.ui.DemoScreens.EntryScreen3
 import org.alwinsden.remnant.ui.Home
 
 

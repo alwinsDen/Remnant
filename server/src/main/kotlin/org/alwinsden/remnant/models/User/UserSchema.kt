@@ -13,7 +13,7 @@ class UserSchemaService(private val database: Database) {
     object Users : Table() {
         val id = integer("id").autoIncrement()
         val name = varchar("name", length = 50)
-        val email = varchar("email", length = 50)
+        val email = varchar("email", length = 50).uniqueIndex()
         val state = integer(name = "state").default(1)
         val gender = integer(name = "gender").default(GenderEnum.NOT_SPECIFIED.value)
         val city = varchar("city", length = 50).nullable()

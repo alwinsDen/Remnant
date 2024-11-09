@@ -1,4 +1,4 @@
-package org.alwinsden.remnant.ui
+package org.alwinsden.remnant.ui.DemoScreens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -9,6 +9,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -134,6 +136,7 @@ fun EntryScreen3() {
                                 runLoadingOpacity = false
                             }
                         }
+                        .pointerHoverIcon(PointerIcon.Hand)
                 )
                 Text(
                     text = "syncing...",
