@@ -6,9 +6,8 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.coroutines.runBlocking
+import org.alwinsden.remnant.api_data_class.ExposedUserWithId
 import org.alwinsden.remnant.api_data_class.ResponseMessage
-import org.alwinsden.remnant.api_data_class.UserProfileClass
 import org.alwinsden.remnant.models.User.UserSchemaService
 import org.jetbrains.exposed.sql.Database
 
@@ -35,8 +34,14 @@ class UserVerificationGET(private val database: Database) {
             if (userData != null) {
                 call.respond(
                     HttpStatusCode.Accepted,
-                    UserProfileClass(
-                        profile = userData
+                    ExposedUserWithId(
+                        userData.id,
+                        userData.name,
+                        userData.email,
+                        userData.state,
+                        userData.gender,
+                        userData.city,
+                        userData.demo_completed
                     )
                 )
             }

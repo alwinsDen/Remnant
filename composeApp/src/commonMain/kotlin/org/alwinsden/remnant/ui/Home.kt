@@ -12,12 +12,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.ktor.client.engine.okhttp.*
 import org.alwinsden.remnant.*
 import org.alwinsden.remnant.components.GoogleLoginInteractible
 import org.alwinsden.remnant.dataStore.coreComponent
-import org.alwinsden.remnant.networking.ApiCentral
-import org.alwinsden.remnant.networking.createHttpClient
 import org.alwinsden.remnant.networking_utils.onError
 import org.alwinsden.remnant.networking_utils.onSuccess
 import org.jetbrains.compose.resources.painterResource
@@ -33,7 +30,11 @@ fun Home() {
         if (jwtTokenValue.isNotEmpty()) {
             HTTP_CALL_CLIENT.profileGetRequest()
                 .onSuccess {
-                    nvvController.navigate(NavRouteClass.EntryScreen1.route)
+                    if (it.demo_completed == true) {
+                        nvvController.navigate(NavRouteClass.MainScreen1.route)
+                    } else {
+                        nvvController.navigate(NavRouteClass.EntryScreen1.route)
+                    }
                 }
                 .onError {
                     println("User authentication Failed.")

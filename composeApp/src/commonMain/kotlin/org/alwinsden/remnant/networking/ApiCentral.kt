@@ -8,9 +8,9 @@ import io.ktor.http.*
 import io.ktor.util.network.*
 import kotlinx.serialization.SerializationException
 import org.alwinsden.remnant.api_data_class.AuthPost
+import org.alwinsden.remnant.api_data_class.ExposedUserWithId
 import org.alwinsden.remnant.api_data_class.MessageResponseClass
 import org.alwinsden.remnant.api_data_class.ResponseMessage
-import org.alwinsden.remnant.api_data_class.UserProfileClass
 import org.alwinsden.remnant.dataStore.coreComponent
 import org.alwinsden.remnant.networkHost
 import org.alwinsden.remnant.networking_utils.NetworkError
@@ -68,7 +68,7 @@ class ApiCentral(
         }
     }
 
-    suspend fun profileGetRequest(): Result<UserProfileClass, NetworkError> {
+    suspend fun profileGetRequest(): Result<ExposedUserWithId, NetworkError> {
         val jwtTokenValue = coreComponent.appPreferences.doesAuthKeyExist()
         val response: HttpResponse = try {
             httpClient.get(
@@ -89,7 +89,7 @@ class ApiCentral(
         }
     }
 
-    suspend fun demoCompletedPOSTRequest(): Result<ResponseMessage, NetworkError>{
+    suspend fun demoCompletedPOSTRequest(): Result<ResponseMessage, NetworkError> {
         val jwtTokenValue = coreComponent.appPreferences.doesAuthKeyExist()
         val response: HttpResponse = try {
             httpClient.post(

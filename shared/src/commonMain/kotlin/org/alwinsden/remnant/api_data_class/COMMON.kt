@@ -28,11 +28,6 @@ data class ExposedUserWithId(
 )
 
 @Serializable
-data class UserProfileClass(
-    val profile: ExposedUserWithId
-)
-
-@Serializable
 data class ResponseMessage(
     val message: String,
 )
