@@ -94,6 +94,7 @@ fun RoutingControl() {
             }
             composable(route = NavRouteClass.MainScreen1.route) {
                 BackgroundTheme(color = 0xffffffff) {
+                    LogoutGoogle(iconColor = 0xff000000)
                     MainScreen1()
                 }
             }
