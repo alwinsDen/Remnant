@@ -61,9 +61,9 @@ actual fun EntryScreen2Source() {
                 painter = painterResource(Res.drawable.TulipVertical),
                 contentDescription = null,
                 modifier =
-                Modifier
-                    .aspectRatio(0.34065935f)
-                    .offset(x = (-270).dp, y = 230.dp)
+                    Modifier
+                        .aspectRatio(0.34065935f)
+                        .offset(x = (-270).dp, y = 230.dp)
             )
         }
 
@@ -74,3 +74,5 @@ data class Progress(
     val fraction: Float,
     val timeMillis: Long
 )
+
+actual val PowerButtonPadding = 15;

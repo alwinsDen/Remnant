@@ -15,6 +15,7 @@ import com.composables.icons.lucide.Power
 import kotlinx.coroutines.runBlocking
 import org.alwinsden.remnant.LocalNavController
 import org.alwinsden.remnant.NavRouteClass
+import org.alwinsden.remnant.PowerButtonPadding
 import org.alwinsden.remnant.dataStore.coreComponent
 
 @Composable
@@ -24,7 +25,7 @@ fun LogoutGoogle(iconColor: Long = 0xffffffff) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .offset(x = (-20).dp, y = 20.dp),
+                .offset(x = (-20).dp, y = PowerButtonPadding.dp),
             horizontalArrangement = Arrangement.End
         ) {
             Image(

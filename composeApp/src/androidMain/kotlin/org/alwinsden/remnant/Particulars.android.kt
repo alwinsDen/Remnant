@@ -135,3 +135,5 @@ actual fun EntryScreen2Source() {
         }
     }
 }
+
+actual val PowerButtonPadding = 40;

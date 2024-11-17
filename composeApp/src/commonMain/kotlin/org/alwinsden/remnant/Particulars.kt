@@ -50,3 +50,5 @@ expect fun getPlatformName(): String
 //There are some android only functions.
 @Composable
 expect fun EntryScreen2Source(): Unit
+
+expect val PowerButtonPadding: Int;
