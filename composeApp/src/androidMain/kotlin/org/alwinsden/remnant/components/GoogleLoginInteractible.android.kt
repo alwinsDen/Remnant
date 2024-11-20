@@ -2,11 +2,13 @@ package org.alwinsden.remnant.components
 
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -23,8 +25,7 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.Firebase
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import org.alwinsden.remnant.*
 import org.alwinsden.remnant.api_data_class.AuthPost
@@ -89,12 +90,12 @@ actual fun GoogleLoginInteractible() {
                 .build()
             coroutineScope.launch {
                 try {
-                    val request = credentialManager.getCredential(
+                    val requestSls = credentialManager.getCredential(
                         request = request,
                         context = context,
                     )
-                    viewModel.onSignInWithGoogle(request.credential, nvvController = nvvController)
-                    Log.d(NetworkLogCodes.SuccessPing.code, "Credential obtained: ${request.credential}")
+                    viewModel.onSignInWithGoogle(requestSls.credential, nvvController = nvvController)
+                    Log.d(NetworkLogCodes.SuccessPing.code, "Credential obtained: ${requestSls.credential}")
                 } catch (e: GetCredentialException) {
                     Log.d(NetworkLogCodes.FailedPing.code, e.message.orEmpty())
                 }
@@ -109,4 +110,17 @@ actual fun GoogleLoginInteractible() {
                 .width(250.dp)
         )
     }
+//    if (triggerLoadingState) {
+//        Box(
+//            modifier = Modifier
+//                .width(280.dp)
+//                .padding(top = 70.dp)
+//        ) {
+//            Text(
+//                text = "Logging in. Please wait.",
+//                color = Color.Red,
+//                modifier = Modifier.align(Alignment.Center)
+//            )
+//        }
+//    }
 }

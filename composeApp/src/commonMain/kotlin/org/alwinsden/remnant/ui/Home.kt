@@ -73,15 +73,15 @@ fun Home() {
                 )
                 Box(
                     modifier = Modifier
-                        .height(70.dp)
+                        .height(90.dp)
                 ) {
                     if (!isJwtVerificationLoading) {
                         GoogleLoginInteractible()
                     } else {
                         Row(
                             modifier =
-                            Modifier
-                                .align(Alignment.Center),
+                                Modifier
+                                    .align(Alignment.Center),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
                         ) {
