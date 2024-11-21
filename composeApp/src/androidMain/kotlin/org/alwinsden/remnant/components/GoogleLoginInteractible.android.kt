@@ -2,13 +2,11 @@ package org.alwinsden.remnant.components
 
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -25,8 +23,11 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.Firebase
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import org.alwinsden.remnant.*
 import org.alwinsden.remnant.api_data_class.AuthPost
 import org.alwinsden.remnant.dataStore.coreComponent
@@ -43,15 +44,30 @@ suspend fun signInWithGoogleIdToken(idToken: String, nvvController: NavHostContr
     val firebaseAuthResult = Firebase.auth.signInWithCredential(firebaseCredential).await()
     val userIdToken = firebaseAuthResult.user?.getIdToken(true)?.await()?.token
     if (userIdToken != null) {
-        runBlocking {
-            HTTP_CALL_CLIENT.authRequest(AuthPost(authCode = userIdToken, authMachine = "ANDROID"))
-                .onSuccess {
-                    coreComponent.appPreferences.addUpdateAuthKey(jwtToken = it.token)
-                    nvvController.navigate(NavRouteClass.EntryScreen1.route)
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val authRequest =
+                    HTTP_CALL_CLIENT.authRequest(AuthPost(authCode = userIdToken, authMachine = "ANDROID"))
+                withContext(Dispatchers.Main) {
+                    authRequest.onSuccess {
+                        coreComponent.appPreferences.addUpdateAuthKey(jwtToken = it.token)
+                        val profileResponse = HTTP_CALL_CLIENT.profileGetRequest()
+                        profileResponse.onSuccess {
+                            if (it.demo_completed == true) {
+                                nvvController.navigate(NavRouteClass.MainScreen1.route)
+                            } else {
+                                nvvController.navigate(NavRouteClass.EntryScreen1.route)
+                            }
+                        }.onError {
+                            println("Failed to obtain user profile.")
+                        }
+                    }.onError {
+                        Log.e(NetworkLogCodes.FailedAuth.code, "Failed the server authentication.")
+                    }
                 }
-                .onError {
-                    Log.e(NetworkLogCodes.FailedAuth.code, "Failed the server authentication.")
-                }
+            } catch (e: Exception) {
+                Log.e("AuthNavigationError", "An error occurred: ${e.localizedMessage}")
+            }
         }
     }
 }
