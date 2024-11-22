@@ -2,23 +2,21 @@ package org.alwinsden.remnant.requests.generalManagement
 
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.alwinsden.remnant.api_data_class.ResponseMessage
 import org.alwinsden.remnant.models.User.UserSchemaService
+import org.alwinsden.remnant.requests.userVerification.getUserInfo
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.update
 
 class GeneralManagementPOST(private val database: Database) {
     suspend fun Route.completeDemoState() {
         post("/completeDemo") {
-            val principal = call.principal<JWTPrincipal>()
-            val userId = principal!!.payload.getClaim("id").asInt()
+            val userInfo = getUserInfo(call);
             val userInstance = UserSchemaService(database)
             val userData = userInstance.readUserProfileId(
-                id = userId
+                id = userInfo.id
             ).let {
                 if (it == null) {
                     call.respond(

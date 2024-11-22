@@ -12,24 +12,32 @@ import org.alwinsden.remnant.models.User.UserSchemaService
 import org.jetbrains.exposed.sql.Database
 
 
+data class BaseInfo(val email: String, val id: Int, val name: String, val expiresAt: Long)
+
+fun getUserInfo(call: ApplicationCall): BaseInfo {
+    val principal = call.principal<JWTPrincipal>()
+    val email = principal!!.payload.getClaim("email").asString()
+    val name = principal.payload.getClaim("name").asString()
+    val id = principal.payload.getClaim("id").asInt()
+    val expiration = principal.expiresAt?.time?.minus(System.currentTimeMillis())
+    return BaseInfo(email, id, name, expiration!!)
+}
+
 class UserVerificationGET(private val database: Database) {
+
     suspend fun Route.jwtVerification() {
         get("/generate_jwt") {
-            val principal = call.principal<JWTPrincipal>()
-            val emailIdentifier = principal!!.payload.getClaim("email").asString()
-            val username = principal.payload.getClaim("name").asString()
-            val expiresAt = principal.expiresAt?.time?.minus(System.currentTimeMillis())
-            call.respondText("Hello $emailIdentifier with $username, token expires at $expiresAt")
+            val userInfo = getUserInfo(call);
+            call.respondText("Hello ${userInfo.id} with ${userInfo.name}, token expires at ${userInfo.expiresAt}")
         }
     }
 
     suspend fun Route.getUserProfile() {
         get("/profile") {
-            val principal = call.principal<JWTPrincipal>()
-            val userId = principal!!.payload.getClaim("id").asInt()
+            val userInfo = getUserInfo(call);
             val userInstance = UserSchemaService(database)
             val userData = userInstance.readUserProfileId(
-                id = userId
+                id = userInfo.id
             )
             if (userData != null) {
                 call.respond(

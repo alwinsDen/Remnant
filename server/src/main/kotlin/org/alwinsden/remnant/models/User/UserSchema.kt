@@ -14,9 +14,14 @@ class UserSchemaService(private val database: Database) {
         val id = integer("id").autoIncrement()
         val name = varchar("name", length = 50)
         val email = varchar("email", length = 50).uniqueIndex()
-        val state = integer(name = "state").default(1)
+        val state = integer(name = "state").default(1) //this is the page state.
         val gender = integer(name = "gender").default(GenderEnum.NOT_SPECIFIED.value)
         val city = varchar("city", length = 50).nullable()
+        val working_hr_start = integer("working_hr_start")
+            .check { it.between(0, 23) }
+            .default(6)
+        val user_age = integer("user_age").default(13).check { it greaterEq 13 }
+        val user_prompt = varchar("user_prompt", length = 200).default("")
         val demo_completed = bool(name = "demo_completed").default(false)
         override val primaryKey = PrimaryKey(id)
     }
@@ -42,22 +47,10 @@ class UserSchemaService(private val database: Database) {
             * */
             if (Users.exists()) {
                 exec("alter table ${Users.tableName} drop column if exists age")
-                if (Users.columns.none { it.name == "email" }) {
-                    exec("alter table ${Users.tableName} add column email VARCHAR(50)")
-                }
-                if (Users.columns.none { it.name == "state" }) {
-                    exec("alter table ${Users.tableName} add column state")
-                }
-                if (Users.columns.none { it.name == "gender" }) {
-                    exec("alter table ${Users.tableName} add column gender")
-                }
-                if (Users.columns.none { it.name == "city" }) {
-                    exec("alter table ${Users.tableName} add column city")
-                }
-                if (Users.columns.none { it.name == "demo_completed" }) {
-                    exec("alter table ${Users.tableName} add column demo_completed")
-                }
+                /*this section should only be used to make modifications to the exisitng
+                * columns or tables rather than adding stuff.*/
             }
+            //this automatically manages new columns.
             SchemaUtils.createMissingTablesAndColumns(Users)
         }
     }
