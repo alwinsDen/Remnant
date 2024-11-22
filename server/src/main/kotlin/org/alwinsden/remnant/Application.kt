@@ -81,8 +81,9 @@ fun Application.module() {
                         .verifyUserExistence(email = credEmail, id = credId, name = credName)
                     if (checkUserExist > 0) {
                         JWTPrincipal(credential.payload)
+                    } else {
+                        null
                     }
-                    null
                 } else {
                     null
                 }
