@@ -1,3 +1,5 @@
+import io.ktor.plugin.features.*
+
 plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.ktor)
@@ -13,6 +15,9 @@ application {
 }
 
 ktor {
+    /*this is useful for simple docker deployment. Too much hassle
+    * trying to get simple stuff done.*/
+    //TODO: introduce docker compose to also include ignored files.
     docker {
         jreVersion.set(JavaVersion.VERSION_17)
         portMappings.set(
@@ -24,7 +29,25 @@ ktor {
                 )
             )
         )
+        val envVars = loadEnvFile().map { (key, value) ->
+            DockerEnvironmentVariable(key, value)
+        }
+        environmentVariables.set(envVars)
     }
+}
+
+//this function loads the env variables from .env file.
+fun loadEnvFile(envFile: String = "../.env"): Map<String, String> {
+    val envFileBuffer = file(envFile)
+    if (!envFileBuffer.exists()) {
+        return emptyMap()
+    }
+    return envFileBuffer.readLines()
+        .filter { it.isNotBlank() && !it.startsWith("#") }
+        .associate {
+            val (key, value) = it.split("=", limit = 2)
+            key.trim() to value.trim()
+        }
 }
 
 dependencies {
