@@ -17,10 +17,13 @@ class UserSchemaService(private val database: Database) {
         val state = integer(name = "state").default(1) //this is the page state.
         val gender = integer(name = "gender").default(GenderEnum.NOT_SPECIFIED.value)
         val city = varchar("city", length = 50).nullable()
+        val user_age = integer("user_age").default(13).check { it greaterEq 13 }
         val working_hr_start = integer("working_hr_start")
             .check { it.between(0, 23) }
             .default(6)
-        val user_age = integer("user_age").default(13).check { it greaterEq 13 }
+        val working_hr_end = integer("working_hr_end")
+            .check { it.between(0, 23) }
+            .default(17)
         val user_prompt = varchar("user_prompt", length = 200).default("")
         val demo_completed = bool(name = "demo_completed").default(false)
         override val primaryKey = PrimaryKey(id)
@@ -115,6 +118,17 @@ class UserSchemaService(private val database: Database) {
     suspend fun delete(id: Int) {
         dbQuery {
             Users.deleteWhere { Users.id.eq(id) }
+        }
+    }
+
+    suspend fun verifyUserExistence(email: String, id: Int, name: String): Int {
+        return dbQuery {
+            Users.selectAll()
+                .where { (Users.email eq email) and (Users.id eq id) }
+                .map {
+                    it.toExposedUserWithId()
+                }
+                .count()
         }
     }
 }

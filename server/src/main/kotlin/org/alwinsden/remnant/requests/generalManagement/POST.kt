@@ -11,10 +11,12 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.update
 
 class GeneralManagementPOST(private val database: Database) {
+
+    private val userInstance = UserSchemaService(database)
+
     suspend fun Route.completeDemoState() {
         post("/completeDemo") {
             val userInfo = getUserInfo(call);
-            val userInstance = UserSchemaService(database)
             val userData = userInstance.readUserProfileId(
                 id = userInfo.id
             ).let {
@@ -26,7 +28,7 @@ class GeneralManagementPOST(private val database: Database) {
                 }
                 it
             }
-            UserSchemaService(database).dbQuery {
+            userInstance.dbQuery {
                 UserSchemaService.Users.update({ UserSchemaService.Users.id eq userData!!.id }) {
                     it[demo_completed] = true
                 }

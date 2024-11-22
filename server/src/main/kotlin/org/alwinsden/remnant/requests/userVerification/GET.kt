@@ -24,7 +24,7 @@ fun getUserInfo(call: ApplicationCall): BaseInfo {
 }
 
 class UserVerificationGET(private val database: Database) {
-
+    private val userInstance = UserSchemaService(database)
     suspend fun Route.jwtVerification() {
         get("/generate_jwt") {
             val userInfo = getUserInfo(call);
@@ -35,7 +35,6 @@ class UserVerificationGET(private val database: Database) {
     suspend fun Route.getUserProfile() {
         get("/profile") {
             val userInfo = getUserInfo(call);
-            val userInstance = UserSchemaService(database)
             val userData = userInstance.readUserProfileId(
                 id = userInfo.id
             )

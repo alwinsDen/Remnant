@@ -23,6 +23,7 @@ import org.alwinsden.remnant.requests.generalManagement.GeneralManagementPOST
 import org.alwinsden.remnant.requests.openApi.OpenApiGET
 import org.alwinsden.remnant.requests.openApi.OpenApiPOST
 import org.alwinsden.remnant.requests.userVerification.UserVerificationGET
+import org.alwinsden.remnant.requests.userVerification.UserVerificationPOST
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -53,6 +54,7 @@ fun Application.module() {
         applicationConfiguration = applicationConfiguration,
     )
     val userVerificationAPI_GET = UserVerificationGET(database)
+    val userVerificationAPI_POST = UserVerificationPOST(database)
     val GeneralManagementAPI_POST = GeneralManagementPOST(database)
 
     //installations
@@ -69,14 +71,18 @@ fun Application.module() {
                 acceptLeeway(3)
             }
             validate { credential ->
+                val credEmail = credential.payload.getClaim("email").asString()
+                val credName = credential.payload.getClaim("name").asString()
+                val credId = credential.payload.getClaim("id").asInt()
                 if (
-                    credential.payload.getClaim("email").asString() != ""
-                    &&
-                    credential.payload.getClaim("name").asString() != ""
-                    &&
-                    credential.payload.getClaim("id").asString() != ""
+                    credEmail.isNotEmpty() && credName.isNotEmpty() && credId !== null
                 ) {
-                    JWTPrincipal(credential.payload)
+                    val checkUserExist = UserSchemaService(database)
+                        .verifyUserExistence(email = credEmail, id = credId, name = credName)
+                    if (checkUserExist > 0) {
+                        JWTPrincipal(credential.payload)
+                    }
+                    null
                 } else {
                     null
                 }
@@ -97,6 +103,11 @@ fun Application.module() {
                 CoroutineScope(Dispatchers.IO).launch {
                     jwtVerification()
                     getUserProfile()
+                }
+            }
+            with(userVerificationAPI_POST) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    postUserBasicDetails()
                 }
             }
             with(GeneralManagementAPI_POST) {

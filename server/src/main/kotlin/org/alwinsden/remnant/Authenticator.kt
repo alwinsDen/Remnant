@@ -26,6 +26,8 @@ class Authenticator(
     private val database: Database
 ) {
 
+    private val userInstance = UserSchemaService(database)
+
     fun generalAuthenticator(accessToken: String, authMachine: String): ExposedUserWithId? {
         if (authMachine == "DESKTOP") {
             return desktopAuth(accessToken = accessToken)
@@ -37,7 +39,6 @@ class Authenticator(
 
     private fun desktopAuth(accessToken: String): ExposedUserWithId? {
         val client = OkHttpClient()
-        val userInstance = UserSchemaService(database)
         val request = Request.Builder()
             .url("https://www.googleapis.com/oauth2/v3/userinfo")
             .addHeader("Authorization", "Bearer $accessToken")
@@ -94,7 +95,6 @@ class Authenticator(
             val decodedJWT = FirebaseAuth.getInstance().verifyIdToken(accessToken)
             val name = decodedJWT.name
             val email = decodedJWT.email
-            val userInstance = UserSchemaService(database)
             return runBlocking {
                 val userExists = userInstance.readEmail(email = email)
                 if (userExists == null) {
