@@ -9,6 +9,7 @@ import org.alwinsden.remnant.api_data_class.ResponseMessage
 import org.alwinsden.remnant.api_data_class.UserBasicDetails
 import org.alwinsden.remnant.models.User.UserSchemaService
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.update
 
 class UserVerificationPOST(private val database: Database) {
 
@@ -18,9 +19,19 @@ class UserVerificationPOST(private val database: Database) {
         post("/basic_user_details") {
             val req = call.receive<UserBasicDetails>()
             val userInfo = getUserInfo(call)
+            userInstance.dbQuery {
+                UserSchemaService.Users.update({ UserSchemaService.Users.id eq userInfo.id }) {
+                    it[user_age] = req.userAge
+                    it[gender] = req.gender
+                    it[city] = req.city
+                    it[working_hr_start] = req.workingHrStart
+                    it[working_hr_end] = req.workingHrEnd
+                    it[user_prompt] = req.userPrompt
+                }
+            }
             call.respond(
                 HttpStatusCode.Accepted,
-                ResponseMessage("basic details updated.")
+                ResponseMessage("The details have been updated.")
             )
         }
     }
