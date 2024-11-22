@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import org.jetbrains.compose.resources.Font
 import remnant.composeapp.generated.resources.*
 
@@ -52,3 +53,4 @@ expect fun getPlatformName(): String
 expect fun EntryScreen2Source(): Unit
 
 expect val PowerButtonPadding: Int;
+expect val mainScreenColumnWidth: Dp;

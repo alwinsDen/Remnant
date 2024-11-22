@@ -2,6 +2,7 @@ package org.alwinsden.remnant
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
@@ -76,3 +77,17 @@ data class Progress(
 )
 
 actual val PowerButtonPadding = 15;
+actual val mainScreenColumnWidth = 400.dp
+
+@Preview
+@Composable
+fun test() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)
+    ) {
+//        MainScreen1()
+    }
+}
+

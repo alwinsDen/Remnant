@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
@@ -137,3 +139,16 @@ actual fun EntryScreen2Source() {
 }
 
 actual val PowerButtonPadding = 40;
+actual val mainScreenColumnWidth: Dp = Dp.Unspecified
+
+@Preview
+@Composable
+fun test() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)
+    ) {
+//        MainScreen1()
+    }
+}
