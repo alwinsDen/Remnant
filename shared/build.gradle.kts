@@ -32,6 +32,9 @@ kotlin {
 android {
     namespace = "org.alwinsden.remnant.shared"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11

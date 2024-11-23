@@ -8,7 +8,7 @@ import java.io.FileInputStream
 
 fun Application.configurationFirebase() {
     val serviceAccount: FileInputStream =
-        FileInputStream("server/src/main/resources/ktor-firebase-auth-firebase-adminsdk.json")
+        FileInputStream(System.getenv("FIREBASE_CREDENTIAL_PATH"))
     val firebaseOptions: FirebaseOptions = FirebaseOptions.Builder()
         .setCredentials(GoogleCredentials.fromStream(serviceAccount))
         .build()

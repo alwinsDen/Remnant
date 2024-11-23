@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:latest
+    container_name: remnant_ai_db
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB_NAME}
+      - DATABASE_HOST=${POSTGRES_HOST}
+  ktor-server:
+    container_name: remnant_ai_ktor
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - FIREBASE_CREDENTIAL_PATH=ktor-firebase-auth-firebase-adminsdk.json
+      - POSTGRES_DB_URL=jdbc:postgresql://postgres:5432/testdb
+    depends_on:
+      - postgres

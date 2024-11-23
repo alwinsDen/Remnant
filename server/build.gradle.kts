@@ -50,6 +50,16 @@ fun loadEnvFile(envFile: String = "../.env"): Map<String, String> {
         }
 }
 
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = "org.alwinsden.remnant.ApplicationKt"
+    }
+    from({
+        configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) }
+    })
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 dependencies {
     implementation(projects.shared)
     implementation(libs.logback)

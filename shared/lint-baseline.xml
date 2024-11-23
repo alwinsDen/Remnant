@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.5.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.5.2)" variant="all"
+        version="8.5.2">
+
+    <issue
+            id="EnsureInitializerMetadata"
+            message="Every Initializer needs to be accompanied by a corresponding &lt;meta-data> entry in the AndroidManifest.xml file.">
+        <location
+                file="src/androidMain/kotlin/org/alwinsden/remnant/ContextProvider.kt"/>
+    </issue>
+
+</issues>
