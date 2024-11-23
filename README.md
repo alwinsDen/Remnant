@@ -32,13 +32,27 @@ cd ~{jresource}/bin
    `Remnant/server/src/main/resources/ktor-firebase-auth-firebase-adminsdk.json`
 
 ### Ktor docker image and deployment
-#### 1. build the server's `.jar` build artifact. 
+
+#### 1. build the server's `.jar` build artifact.
+
 ```shell
 ./gradlew :server:build
 ```
-#### 2. build and deploy docker image on local machine. 
+
+#### 2. build and deploy docker image on local machine.
+
 ```shell
 docker compose up --build
+```
+
+### fix for gradle error: `zip END header not found` (UNIX)
+
+```shell
+#remove global gradle install
+rm -rf ~/.gradle/wrapper/dists/gradle-8.7-bin
+rm -rf ~/.gradle/caches
+#run android studio/intellij
+./gradlew build
 ```
 
 ### Stackoverflow refs

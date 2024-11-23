@@ -94,7 +94,6 @@ fun Application.module() {
         }
     }
     routing {
-        //TODO: sometimes http://localhost:8080/.well-known/jwks.json is not being served. Look for concurrency issues.
         static(".well-known") {
             staticRootFolder = File("server/certs")
             file("jwks.json")

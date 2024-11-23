@@ -17,7 +17,6 @@ application {
 ktor {
     /*this is useful for simple docker deployment. Too much hassle
     * trying to get simple stuff done.*/
-    //TODO: introduce docker compose to also include ignored files.
     docker {
         jreVersion.set(JavaVersion.VERSION_17)
         portMappings.set(
