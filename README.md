@@ -31,6 +31,16 @@ cd ~{jresource}/bin
 3. add `ktor-firebase-auth-firebase-adminsdk.json` to
    `Remnant/server/src/main/resources/ktor-firebase-auth-firebase-adminsdk.json`
 
+### Ktor docker image and deployment
+#### 1. build the server's `.jar` build artifact. 
+```shell
+./gradlew :server:build
+```
+#### 2. build and deploy docker image on local machine. 
+```shell
+docker compose up --build
+```
+
 ### Stackoverflow refs
 
 1. https://stackoverflow.com/questions/36919313/android-studio-issue-missing-missing-debug-keystore
