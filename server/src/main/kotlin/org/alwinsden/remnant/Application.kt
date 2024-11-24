@@ -25,6 +25,7 @@ import org.alwinsden.remnant.requests.openApi.OpenApiPOST
 import org.alwinsden.remnant.requests.userVerification.UserVerificationGET
 import org.alwinsden.remnant.requests.userVerification.UserVerificationPOST
 import java.io.File
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 fun main(args: Array<String>) {
@@ -74,11 +75,17 @@ fun Application.module() {
                 val credEmail = credential.payload.getClaim("email").asString()
                 val credName = credential.payload.getClaim("name").asString()
                 val credId = credential.payload.getClaim("id").asInt()
+                val credJtiIdentifier = credential.payload.getClaim("jti_identifier").asString()
                 if (
-                    credEmail.isNotEmpty() && credName.isNotEmpty() && credId !== null
+                    credEmail.isNotEmpty() && credName.isNotEmpty() && credId !== null && credJtiIdentifier.isNotEmpty()
                 ) {
                     val checkUserExist = UserSchemaService(database)
-                        .verifyUserExistence(email = credEmail, id = credId, name = credName)
+                        .verifyUserExistence(
+                            email = credEmail,
+                            id = credId,
+                            name = credName,
+                            uuid_token = UUID.fromString(credJtiIdentifier)
+                        )
                     if (checkUserExist > 0) {
                         JWTPrincipal(credential.payload)
                     } else {

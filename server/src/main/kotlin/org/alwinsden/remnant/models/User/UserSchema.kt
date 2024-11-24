@@ -8,6 +8,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.util.*
 
 class UserSchemaService(private val database: Database) {
     object Users : Table() {
@@ -26,6 +27,7 @@ class UserSchemaService(private val database: Database) {
             .default(17)
         val user_prompt = varchar("user_prompt", length = 200).default("")
         val demo_completed = bool(name = "demo_completed").default(false)
+        val jti_identifier = uuid("jti_identifier").default(UUID.randomUUID())
         override val primaryKey = PrimaryKey(id)
     }
 
@@ -121,10 +123,10 @@ class UserSchemaService(private val database: Database) {
         }
     }
 
-    suspend fun verifyUserExistence(email: String, id: Int, name: String): Int {
+    suspend fun verifyUserExistence(email: String, id: Int, name: String, uuid_token: UUID): Int {
         return dbQuery {
             Users.selectAll()
-                .where { (Users.email eq email) and (Users.id eq id) }
+                .where { (Users.email eq email) and (Users.id eq id) and (Users.jti_identifier eq uuid_token) }
                 .map {
                     it.toExposedUserWithId()
                 }

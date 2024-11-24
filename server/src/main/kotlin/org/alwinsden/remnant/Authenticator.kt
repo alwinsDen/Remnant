@@ -14,6 +14,7 @@ import org.alwinsden.remnant.api_data_class.ExposedUserWithId
 import org.alwinsden.remnant.api_data_class.GCloudAuthResult
 import org.alwinsden.remnant.models.User.UserSchemaService
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.update
 import java.security.KeyFactory
 import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
@@ -130,7 +131,7 @@ class Authenticator(
         }
     }
 
-    fun generateJWT(email: String, name: String, id: Int): String {
+    suspend fun generateJWT(email: String, name: String, id: Int): String {
         val privateKeyString = applicationConfig.property("jwt.privateKey").getString()
         val audience = applicationConfig.property("jwt.audience").getString()
         val issuer = applicationConfig.property("jwt.issuer").getString()
@@ -138,12 +139,20 @@ class Authenticator(
         val publicKey = jwkProvider.get("86e1621b-31d1-4e10-a9f4-efc72f259180").publicKey
         val keySpecPKCS8 = PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyString))
         val privateKey = KeyFactory.getInstance("RSA").generatePrivate(keySpecPKCS8)
+        val generateUUID = UUID.randomUUID()
+        //generated jti identifier for each login.
+        userInstance.dbQuery {
+            UserSchemaService.Users.update({ UserSchemaService.Users.id eq id }) {
+                it[jti_identifier] = generateUUID
+            }
+        }
         val token = JWT.create()
             .withAudience(audience)
             .withIssuer(issuer)
             .withClaim("email", email)
             .withClaim("name", name)
             .withClaim("id", id)
+            .withClaim("jti_identifier", generateUUID.toString())
             .withExpiresAt(Date(System.currentTimeMillis() + 86_400_000))
             .sign(Algorithm.RSA256(publicKey as RSAPublicKey, privateKey as RSAPrivateKey))
         return token
