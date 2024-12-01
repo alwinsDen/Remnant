@@ -45,14 +45,20 @@ cd ~{jresource}/bin
 docker compose up --build
 ```
 
-### fix for gradle error: `zip END header not found` (UNIX)
+### fix for gradle error: `zip END header not found`(for unix)
 
 ```shell
 #remove global gradle install
 rm -rf ~/.gradle/wrapper/dists/gradle-8.7-bin
+./glaflew clean
 rm -rf ~/.gradle/caches
 #run android studio/intellij
 ./gradlew build
+```
+### fix for SDK location not found even if you have sdk installed(for unix)
+Open/create `local.properties` file and add
+```shell
+sdk.dir=/home/{username}/Android/Sdk
 ```
 
 ### Stackoverflow refs
