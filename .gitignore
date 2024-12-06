@@ -22,4 +22,4 @@ server/src/main/resources/ktor-firebase-auth-firebase-adminsdk.json
 composeApp/settings_preferences.preferences_pb
 composeApp/tokens/StoredCredential
 .env
-aiController/.env
+ai-agent/.env
