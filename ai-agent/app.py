@@ -1,7 +1,7 @@
-
 import os
 from dotenv import load_dotenv
-from flask import Flask, request
+from flask import Flask, request, jsonify, Response
+from kubernetes.stream import stream
 from openai import OpenAI
 
 client = OpenAI(api_key=os.getenv("OPEN_AI_KEY"))
@@ -10,33 +10,43 @@ load_dotenv()
 
 app = Flask(__name__)
 
-@app.route("/", methods=["POST"])
+
+with open("systemPrompts/dbt_agent_promtp.txt", "r") as f:
+    system_prompt = f.read()
+
+@app.route("/")
+def is_alive():
+    return "The server is alive and pinging at 5000", 200
+
+@app.route("/cbt_query", methods=["POST"])
 def handle_query():
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {
-                "role": "system",
-                "content": [
+    try:
+        user_query = request.json.get("query")
+
+        # Check for a valid query
+        if not user_query:
+            return jsonify({"error": "Missing 'query' in the request body"}), 400
+
+        def generate():
+            response = client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
                     {
-                        "type": "text",
-                        "text": "act lik an CBT counsellor. you are a counsellor who is helping a client who is having a hard time. you need to help them with their problems. you need to help them understand their problems and help them find solutions to their problems."
-                    }
-                ]
-            },
-            {
-                "role": "user",
-                "content": request.json.get("query"),
-            },
-        ],
-        response_format={
-            "type": "json_object"
-        },
-        temperature=0.2,
-        max_tokens=2048,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0
-    )
-    print(response.choices[0].message.content)
-    return response.choices[0].message.content, 200
+                        "role": "system",
+                        "content": system_prompt
+                    },
+                    {
+                        "role": "user",
+                        "content": user_query,
+                    },
+                ],
+                temperature=0.2,
+                stream=True
+            )
+            for chunk in response:
+                if chunk.choices[0].delta.content:
+                    yield chunk.choices[0].delta.content.encode("utf-8")
+
+        return Response(generate(), content_type="text/plain")
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
