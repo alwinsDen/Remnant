@@ -14,6 +14,7 @@ click==8.1.7
 coloredlogs==15.0.1
 Deprecated==1.2.15
 distro==1.9.0
+duckdb==1.1.4.dev3633
 durationpy==0.9
 fastapi==0.115.5
 filelock==3.16.1
