@@ -10,6 +10,7 @@ from prompt_engineeing.creators.components import generate_system_prompt, embedd
 from prompt_engineeing.creators.methods import timestamp_query_sorter_from_source
 import uuid
 import time
+import re
 
 client = OpenAI(api_key=os.getenv("OPEN_AI_KEY"))
 
@@ -98,7 +99,19 @@ def get_chome_queries():
     result = collection.get(ids=request_id)
     return Response(result["documents"])
 
+# return complete conversation history relelated to source.
 @app.route("/get_conversation_history", methods=["GET"])
 def get_conversation_history():
     source_id = request.args.get("source_id")
-    return Response("source_id")
+    sorted_vls = timestamp_query_sorter_from_source(
+                source_id=source_id
+            )
+    past_conversation_history_array = []
+    for past_query,lls in sorted_vls:
+        # ensures to return data between tags.
+        user_query = re.search(r'<user_query>\s*(.*)\s*</user_query>', past_query, re.DOTALL)
+        ai_response = re.search(r'<ai_agent_response>\s*(.*)\s*</ai_agent_response>', past_query, re.DOTALL)
+        past_conversation_history_array.append(
+            {"user_query": user_query.group(1), "ai_response": ai_response.group(1)}
+        )
+    return jsonify({"data": past_conversation_history_array})
