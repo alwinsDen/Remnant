@@ -7,6 +7,7 @@ import chromadb
 from concurrent.futures import ThreadPoolExecutor
 from prompt_engineeing.creators.components import generate_system_prompt, embedding_query_content
 import uuid
+import time
 
 client = OpenAI(api_key=os.getenv("OPEN_AI_KEY"))
 
@@ -36,18 +37,35 @@ def is_alive():
 def handle_query():
     try:
         user_query = request.json.get("query")
+        source_id = request.json.get("source_id")
+
+        # generate timestamp
+        ct = time.time()
 
         # Check for a valid query
         if not user_query:
             return jsonify({"error": "Missing 'query' in the request body"}), 400
-        generated_content = []
+        
         def generate():
+            get_past_conversation_history = collection.get(
+                where={"source_id": source_id}
+            )
+
+            # the past conversation are sorted on basis of timestamps.
+            sorted_vls = sorted(
+                zip(get_past_conversation_history["documents"], get_past_conversation_history["metadatas"]),
+                key=lambda x: x[1]["timestamp"]
+            )
+            conversation_history = ""
+            for past_query, sls in sorted_vls:
+                conversation_history+=past_query
+
             response = client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
                     {
                         "role": "system",
-                        "content": generate_system_prompt(system_prompt=system_prompt, past_conversation="")
+                        "content": generate_system_prompt(system_prompt=system_prompt, past_conversation=conversation_history)
                     },
                     {
                         "role": "user",
@@ -59,16 +77,21 @@ def handle_query():
             )
             for chunk in response:
                 if chunk.choices[0].delta.content:
-                    generated_content.append(chunk.choices[0].delta.content)
+                    # this ensure continue return of chunk content without function scoping out.
                     yield chunk.choices[0].delta.content.encode("utf-8")
+
         server_response = Response(generate(), content_type="text/plain")
+
+        conv_id = uuid.uuid4()
+        # submit a new query to chroma, along with current source_id
         executor.submit(
             add_to_collection_async,
             user_query,
             (server_response.data).decode("utf-8"),
-            {"source": "test1"},
-            str(uuid.uuid4())
+            {"source_id": source_id, "timestamp": ct},
+            str(conv_id)
         )
+
         return server_response
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -76,4 +99,6 @@ def handle_query():
 @app.route("/get_chroma_queries", methods=["GET"])
 def get_chome_queries():
     print(collection.count())
-    return Response("Change the color.")
+    request_id = request.args.get("id")
+    result = collection.get(ids=request_id)
+    return Response(result["documents"])
