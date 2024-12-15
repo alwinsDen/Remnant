@@ -1,0 +1,126 @@
+_type: export
+__export_format: 4
+__export_date: 2024-12-15T21:27:31.218Z
+__export_source: insomnia.desktop.app:v10.2.0
+resources:
+  - _id: req_1ecf2b120660450ab4a99c2564de1a0d
+    parentId: wrk_scratchpad
+    modified: 1734297890775
+    created: 1734295170307
+    url: http://localhost:5000/get_conversation_history?source_id=123454321
+    name: get_conversation_history
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - name: User-Agent
+        value: insomnia/10.2.0
+    authentication: {}
+    metaSortKey: -1734295170307
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: wrk_scratchpad
+    parentId: null
+    modified: 1697082463451
+    created: 1697082463451
+    name: Scratch Pad
+    description: ""
+    scope: collection
+    _type: workspace
+  - _id: req_fdfbc73dce684e5789f2319e06e7dc3b
+    parentId: wrk_scratchpad
+    modified: 1734288617794
+    created: 1699942932372
+    url: http://localhost:5000/get_chroma_queries?id=9f241978-28e4-456c-b67c-a52f0b5dced5
+    name: get_chrome_queries
+    description: ""
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_8d90a83b091e49c9b1879322eda3b091
+    authentication: {}
+    metaSortKey: -1699942932372
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_e025d011bbbe4278b784f4c93d0915a1
+    parentId: wrk_scratchpad
+    modified: 1734297671293
+    created: 1734279655617
+    url: http://localhost:5000/cbt_query
+    name: cbt_query
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: >-
+        {
+        	"query": "can you say <user_query></user_query> three times. i want you to repeat <user_query>",
+        	"source_id":"123454321"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_8d90a83b091e49c9b1879322eda3b091
+      - name: User-Agent
+        value: insomnia/8.4.1
+        id: pair_b10626f7b5df44188d46e5aa5b495bec
+      - id: pair_f726c4ccbb9d45fcb7c34f0da50deb1e
+        name: Accept
+        value: text/plain
+        description: ""
+        disabled: false
+      - id: pair_a877a796ef954695901f2663ba578138
+        name: Connection
+        value: keep-alive
+        description: ""
+        disabled: false
+    authentication: {}
+    metaSortKey: -1699942932322
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: env_99d30891da4bdcebc63947a8fc17f076de878684
+    parentId: wrk_scratchpad
+    modified: 1697082477900
+    created: 1697082477900
+    name: Base Environment
+    data: {}
+    dataPropertyOrder: null
+    color: null
+    isPrivate: false
+    metaSortKey: 1697082477900
+    _type: environment
+  - _id: jar_99d30891da4bdcebc63947a8fc17f076de878684
+    parentId: wrk_scratchpad
+    modified: 1697082477901
+    created: 1697082477901
+    name: Default Jar
+    cookies: []
+    _type: cookie_jar
