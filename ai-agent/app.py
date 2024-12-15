@@ -5,16 +5,15 @@ from kubernetes.stream import stream
 from openai import OpenAI
 import chromadb
 from concurrent.futures import ThreadPoolExecutor
+from chroma import chroma_client,collection
 from prompt_engineeing.creators.components import generate_system_prompt, embedding_query_content
+from prompt_engineeing.creators.methods import timestamp_query_sorter_from_source
 import uuid
 import time
 
 client = OpenAI(api_key=os.getenv("OPEN_AI_KEY"))
 
 load_dotenv()
-
-chroma_client = chromadb.PersistentClient(path="db")
-collection = chroma_client.get_or_create_collection(name="user_prompt_history")
 
 app = Flask(__name__)
 
@@ -47,15 +46,11 @@ def handle_query():
             return jsonify({"error": "Missing 'query' in the request body"}), 400
         
         def generate():
-            get_past_conversation_history = collection.get(
-                where={"source_id": source_id}
+            # the past conversation are sorted on basis of timestamps.
+            sorted_vls = timestamp_query_sorter_from_source(
+                source_id=source_id
             )
 
-            # the past conversation are sorted on basis of timestamps.
-            sorted_vls = sorted(
-                zip(get_past_conversation_history["documents"], get_past_conversation_history["metadatas"]),
-                key=lambda x: x[1]["timestamp"]
-            )
             conversation_history = ""
             for past_query, sls in sorted_vls:
                 conversation_history+=past_query
@@ -102,3 +97,8 @@ def get_chome_queries():
     request_id = request.args.get("id")
     result = collection.get(ids=request_id)
     return Response(result["documents"])
+
+@app.route("/get_conversation_history", methods=["GET"])
+def get_conversation_history():
+    source_id = request.args.get("source_id")
+    return Response("source_id")
