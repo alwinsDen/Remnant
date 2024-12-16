@@ -20,7 +20,7 @@ app = Flask(__name__)
 
 executor = ThreadPoolExecutor(max_workers=2)
 
-with open("systemPrompts/dbt_agent_promtp.txt", "r") as f:
+with open("systemPrompts/dbt_agent_prompt.xml", "r") as f:
     system_prompt = f.read()
 
 def add_to_collection_async(user_query,documents, metadatas, ids):
