@@ -31,6 +31,11 @@ cd ~{jresource}/bin
 3. add `ktor-firebase-auth-firebase-adminsdk.json` to
    `Remnant/server/src/main/resources/ktor-firebase-auth-firebase-adminsdk.json`
 
+### Environment variables
+To run **Remnant server** add the .env variables in intellij/AS run configuration section.
+![image](https://github.com/user-attachments/assets/07690b74-0d0a-42d8-a072-e9e4d99c5602)
+
+
 ### Ktor docker image and deployment
 
 #### 1. build the server's `.jar` build artifact.
