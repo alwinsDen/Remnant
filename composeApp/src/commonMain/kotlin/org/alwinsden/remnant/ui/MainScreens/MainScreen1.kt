@@ -3,6 +3,7 @@ package org.alwinsden.remnant.ui.MainScreens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -19,6 +20,7 @@ import org.alwinsden.remnant.InterFontFamily
 import org.alwinsden.remnant.JudsonFontFamily
 import org.alwinsden.remnant.PowerButtonPadding
 import org.alwinsden.remnant.mainScreenColumnWidth
+import org.alwinsden.remnant.ui.PopsUps.PersonalInfoPopup
 
 @Composable
 fun MainScreen1() {
@@ -51,22 +53,28 @@ fun MainScreen1() {
                 ColoredBckBox(
                     bckColor = 0xff76BF00,
                     header = "Personalize mental health guidance.",
-                    content = "Gender: not specified."
+                    content = "Gender: not specified.",
+                    onClick = {
+                        println("This button was click")
+                    }
                 )
                 ColoredBckBox(
                     bckColor = 0xffA9C1ED,
                     header = "Adapts advice for location context.",
-                    content = "city: not selected."
+                    content = "city: not selected.",
+                    onClick = {}
                 )
                 ColoredBckBox(
                     bckColor = 0xffC88DE3,
                     header = "Tailors suggestions for age.",
-                    content = "age: not specified."
+                    content = "age: not specified.",
+                    onClick = {}
                 )
                 ColoredBckBox(
                     bckColor = 0xffB56161,
                     header = "Helps us determine how busy you are.",
-                    content = "specify work hours: 9am-6:30pm."
+                    content = "specify work hours: 9am-6:30pm.",
+                    onClick = {}
                 )
                 SpecialColoredBckBox(
                     bckColor = 0xff000000,
@@ -76,10 +84,11 @@ fun MainScreen1() {
             }
         }
     }
+    PersonalInfoPopup()
 }
 
 @Composable
-private fun ColoredBckBox(bckColor: Long, header: String, content: String) {
+private fun ColoredBckBox(bckColor: Long, header: String, content: String, onClick: ()->Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -124,6 +133,9 @@ private fun ColoredBckBox(bckColor: Long, header: String, content: String) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
+                    .clickable {
+                        onClick()
+                    }
             ) {
                 Column {
                     Text(
