@@ -33,12 +33,13 @@ import org.alwinsden.remnant.InterFontFamily
 import org.alwinsden.remnant.JudsonFontFamily
 import org.alwinsden.remnant.PowerButtonPadding
 import org.alwinsden.remnant.mainScreenColumnWidth
+import org.alwinsden.remnant.ui.PopsUps.EnterCityNameDialog
 import org.alwinsden.remnant.ui.PopsUps.PersonalInfoPopup
 
 @Composable
 fun MainScreen1() {
     val optionEnterState = remember { mutableIntStateOf(-1) }
-    val userBioSelection = remember { mutableMapOf<String, Int>() }
+    val userBioSelection = remember { mutableMapOf<String, Any>() }
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -77,7 +78,9 @@ fun MainScreen1() {
                     bckColor = 0xffA9C1ED,
                     header = "Adapts advice for location context.",
                     content = "city: not selected.",
-                    onClick = {}
+                    onClick = {
+                        optionEnterState.value = 1
+                    }
                 )
                 ColoredBckBox(
                     bckColor = 0xffC88DE3,
@@ -105,6 +108,15 @@ fun MainScreen1() {
                 optionEnterState.value = -1
             }, onSelectedOption = { it ->
                 userBioSelection["gender"] = it
+                optionEnterState.value = -1
+            })
+        }
+
+        1 -> {
+            EnterCityNameDialog(onDismissRequest = {
+                optionEnterState.value = -1
+            }, onSaveData = { it ->
+                userBioSelection["city"] = it
                 optionEnterState.value = -1
             })
         }

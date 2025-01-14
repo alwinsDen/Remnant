@@ -137,6 +137,13 @@ fun PersonalInfoPopup(onOuterClick: () -> Unit, onSelectedOption: (selected: Int
     }
 }
 
+//this is the android specific dialog section
+@Composable
+expect fun EnterCityNameDialog(
+    onDismissRequest: () -> Unit,
+    onSaveData: (cityName: String) -> Unit
+): Unit
+
 @Composable
 fun BottomControllerComponent(onOuterClick: () -> Unit, content: @Composable () -> Unit) {
     Column(
