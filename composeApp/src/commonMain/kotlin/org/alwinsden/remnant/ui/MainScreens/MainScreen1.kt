@@ -33,6 +33,7 @@ import org.alwinsden.remnant.InterFontFamily
 import org.alwinsden.remnant.JudsonFontFamily
 import org.alwinsden.remnant.PowerButtonPadding
 import org.alwinsden.remnant.mainScreenColumnWidth
+import org.alwinsden.remnant.ui.PopsUps.EnterAgeNumberDialog
 import org.alwinsden.remnant.ui.PopsUps.EnterCityNameDialog
 import org.alwinsden.remnant.ui.PopsUps.PersonalInfoPopup
 
@@ -86,13 +87,17 @@ fun MainScreen1() {
                     bckColor = 0xffC88DE3,
                     header = "Tailors suggestions for age.",
                     content = "age: not specified.",
-                    onClick = {}
+                    onClick = {
+                        optionEnterState.value = 2
+                    }
                 )
                 ColoredBckBox(
                     bckColor = 0xffB56161,
                     header = "Helps us determine how busy you are.",
-                    content = "specify work hours: 9am-6:30pm.",
-                    onClick = {}
+                    content = "specify work hours: eg. 9am-6:30pm.",
+                    onClick = {
+                        println(userBioSelection)
+                    }
                 )
                 SpecialColoredBckBox(
                     bckColor = 0xff000000,
@@ -119,6 +124,18 @@ fun MainScreen1() {
                 userBioSelection["city"] = it
                 optionEnterState.value = -1
             })
+        }
+
+        2 -> {
+            EnterAgeNumberDialog(
+                onDismissRequest = {
+                    optionEnterState.value = -1
+                },
+                onSaveData = { it ->
+                    userBioSelection["age"] = it
+                    optionEnterState.value = -1
+                }
+            )
         }
     }
 }

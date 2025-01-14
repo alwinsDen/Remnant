@@ -8,3 +8,14 @@ actual fun EnterCityNameDialog(
     onSaveData: (cityName: String) -> Unit
 ) {
 }
+
+@Composable
+actual fun EnterAgeNumberDialog(
+    onDismissRequest: () -> Unit,
+    onSaveData: (ageNumber: Int) -> Unit
+) {
+}
+
+@Composable
+actual fun TimePickerState() {
+}

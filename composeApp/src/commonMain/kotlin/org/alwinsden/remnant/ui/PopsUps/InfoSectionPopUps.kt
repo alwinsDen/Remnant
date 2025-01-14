@@ -144,6 +144,17 @@ expect fun EnterCityNameDialog(
     onSaveData: (cityName: String) -> Unit
 ): Unit
 
+
+//this is the specific dialog section to take number input
+@Composable
+expect fun EnterAgeNumberDialog(
+    onDismissRequest: () -> Unit,
+    onSaveData: (ageNumber: Int) -> Unit
+): Unit
+
+@Composable
+expect fun TimePickerState(): Unit
+
 @Composable
 fun BottomControllerComponent(onOuterClick: () -> Unit, content: @Composable () -> Unit) {
     Column(
