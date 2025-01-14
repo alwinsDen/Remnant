@@ -114,6 +114,7 @@ android {
         implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
         implementation("app.rive:rive-android:8.7.0")
         implementation(libs.androidx.startup.runtime)
+        implementation(libs.androidx.compose.material3)
     }
 }
 

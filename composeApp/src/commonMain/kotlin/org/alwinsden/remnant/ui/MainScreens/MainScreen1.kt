@@ -36,6 +36,7 @@ import org.alwinsden.remnant.mainScreenColumnWidth
 import org.alwinsden.remnant.ui.PopsUps.EnterAgeNumberDialog
 import org.alwinsden.remnant.ui.PopsUps.EnterCityNameDialog
 import org.alwinsden.remnant.ui.PopsUps.PersonalInfoPopup
+import org.alwinsden.remnant.ui.PopsUps.TimePickerState
 
 @Composable
 fun MainScreen1() {
@@ -96,7 +97,7 @@ fun MainScreen1() {
                     header = "Helps us determine how busy you are.",
                     content = "specify work hours: eg. 9am-6:30pm.",
                     onClick = {
-                        println(userBioSelection)
+                        optionEnterState.value = 3
                     }
                 )
                 SpecialColoredBckBox(
@@ -133,6 +134,21 @@ fun MainScreen1() {
                 },
                 onSaveData = { it ->
                     userBioSelection["age"] = it
+                    optionEnterState.value = -1
+                }
+            )
+        }
+
+        3 -> {
+            TimePickerState(
+                time = { startHour, startMinute, endHour, endMinute ->
+                    userBioSelection["startHour"] = startHour
+                    userBioSelection["startMinute"] = startMinute
+                    userBioSelection["endHour"] = endHour
+                    userBioSelection["endMinute"] = endMinute
+                    optionEnterState.value = -1
+                },
+                onDismissRequest = {
                     optionEnterState.value = -1
                 }
             )

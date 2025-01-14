@@ -27,6 +27,7 @@ firebaseCommonKtx = "21.0.0"
 firebaseCommon = "21.0.0"
 androidx-data-store = "1.1.1"
 androidx-startup = "1.2.0"
+androidx-material3 = "1.4.0-alpha05"
 
 [libraries]
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
@@ -74,6 +75,7 @@ firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-k
 firebase-common = { group = "com.google.firebase", name = "firebase-common", version.ref = "firebaseCommon" }
 datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "androidx-data-store" }
 androidx-startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "androidx-startup" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "androidx-material3" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

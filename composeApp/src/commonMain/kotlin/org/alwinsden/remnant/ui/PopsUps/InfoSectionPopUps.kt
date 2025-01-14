@@ -153,7 +153,10 @@ expect fun EnterAgeNumberDialog(
 ): Unit
 
 @Composable
-expect fun TimePickerState(): Unit
+expect fun TimePickerState(
+    time: (startHour: Int, startMinute: Int, endHour: Int, endMinute: Int) -> Unit,
+    onDismissRequest: () -> Unit
+): Unit
 
 @Composable
 fun BottomControllerComponent(onOuterClick: () -> Unit, content: @Composable () -> Unit) {

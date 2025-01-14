@@ -17,5 +17,8 @@ actual fun EnterAgeNumberDialog(
 }
 
 @Composable
-actual fun TimePickerState() {
+actual fun TimePickerState(
+    time: (startHour: Int, startMinute: Int, endHour: Int, endMinute: Int) -> Unit,
+    onDismissRequest: () -> Unit
+) {
 }
