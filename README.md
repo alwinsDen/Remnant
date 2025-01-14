@@ -80,6 +80,6 @@ sdk.dir=/home/{username}/Android/Sdk
 
 ### Reqs
 
-#### _JVM DESKTOP_
+#### _JVM DESKTOP_ [DEPRECATED]
 
 1. requires ```libvlc```/```vlccore``` with VLC 3.x.x installed on ```linux```/```OSx``` respctively.

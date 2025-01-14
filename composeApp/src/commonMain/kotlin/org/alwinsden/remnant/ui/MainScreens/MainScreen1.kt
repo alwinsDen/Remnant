@@ -54,14 +54,24 @@ fun MainScreen1() {
                     content = "Gender: not specified."
                 )
                 ColoredBckBox(
-                    bckColor = 0xff76BF00,
-                    header = "Personalize mental health guidance.",
-                    content = "Gender: not specified."
+                    bckColor = 0xffA9C1ED,
+                    header = "Adapts advice for location context.",
+                    content = "city: not selected."
                 )
                 ColoredBckBox(
-                    bckColor = 0xff76BF00,
-                    header = "Personalize mental health guidance.",
-                    content = "Gender: not specified."
+                    bckColor = 0xffC88DE3,
+                    header = "Tailors suggestions for age.",
+                    content = "age: not specified."
+                )
+                ColoredBckBox(
+                    bckColor = 0xffB56161,
+                    header = "Helps us determine how busy you are.",
+                    content = "specify work hours: 9am-6:30pm."
+                )
+                SpecialColoredBckBox(
+                    bckColor = 0xff000000,
+                    header = "Things we should about you?",
+                    content = "Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? "
                 )
             }
         }
@@ -83,7 +93,7 @@ private fun ColoredBckBox(bckColor: Long, header: String, content: String) {
                 modifier = Modifier
                     .background(
                         shape = RoundedCornerShape(8.dp),
-                        color = Color(0xff76BF00),
+                        color = Color(bckColor),
                     )
                     .border(
                         width = 1.dp,
@@ -130,6 +140,87 @@ private fun ColoredBckBox(bckColor: Long, header: String, content: String) {
                 Image(
                     Lucide.ChevronRight,
                     contentDescription = null,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun SpecialColoredBckBox(bckColor: Long, header: String, content: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(.98f)
+                .offset(
+                    y=10.dp
+                )
+                .height(150.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .background(
+                        shape = RoundedCornerShape(8.dp),
+                        color = Color(0xff000000),
+                    )
+                    .border(
+                        width = 1.dp,
+                        color = Color(0xff000000),
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                Text(
+                    color = Color(0xffffffff),
+                    modifier = Modifier
+                        .padding(bottom = 5.dp, start = 10.dp),
+                    fontFamily = InterFontFamily,
+                    text = "*fed into our data model as a factors.")
+            }
+        }
+        Column(
+            modifier = Modifier
+                .padding(start = 5.dp)
+                .background(
+                    shape = RoundedCornerShape(8.dp),
+                    color = Color(0xffffffff),
+                )
+                .border(
+                    width = 1.dp,
+                    color = Color(0xff000000),
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .padding(vertical = 8.dp, horizontal = 12.dp)
+                .fillMaxWidth(.965f)
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+//                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column {
+                    Text(
+                        text = header,
+                        fontFamily = InterFontFamily,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        modifier = Modifier.fillMaxWidth(.90f),
+                        text = content,
+                        fontFamily = InterFontFamily,
+                        color = Color(0xff595959),
+                    )
+                }
+                Image(
+                    Lucide.ChevronRight,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(top = 10.dp)
                 )
             }
         }

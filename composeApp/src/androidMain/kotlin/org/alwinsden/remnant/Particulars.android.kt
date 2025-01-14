@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.alwinsden.remnant.ui.MainScreens.SpecialColoredBckBox
 import org.jetbrains.compose.resources.painterResource
 import remnant.composeapp.generated.resources.*
 
@@ -144,11 +145,9 @@ actual val mainScreenColumnWidth: Dp = Dp.Unspecified
 @Preview
 @Composable
 fun test() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.White)
-    ) {
-//        MainScreen1()
-    }
+    SpecialColoredBckBox(
+        bckColor = 0xff000000,
+        header = "Things we should about you?",
+        content = "Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? "
+    )
 }
