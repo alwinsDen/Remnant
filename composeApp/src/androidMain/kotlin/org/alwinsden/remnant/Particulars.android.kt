@@ -4,7 +4,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -17,10 +24,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.alwinsden.remnant.ui.MainScreens.SpecialColoredBckBox
-import org.alwinsden.remnant.ui.PopsUps.PersonalInfoPopup
 import org.jetbrains.compose.resources.painterResource
-import remnant.composeapp.generated.resources.*
+import remnant.composeapp.generated.resources.Bell
+import remnant.composeapp.generated.resources.Hydrangea
+import remnant.composeapp.generated.resources.Hydrangea_bud
+import remnant.composeapp.generated.resources.Hydrangea_bud_1
+import remnant.composeapp.generated.resources.Osteospermum_3
+import remnant.composeapp.generated.resources.Res
+import remnant.composeapp.generated.resources.Romashka
+import remnant.composeapp.generated.resources.Tulip
 
 actual fun getPlatformName(): String {
     return "android"
@@ -146,5 +158,5 @@ actual val mainScreenColumnWidth: Dp = Dp.Unspecified
 @Preview
 @Composable
 fun test() {
-    PersonalInfoPopup()
+//    PersonalInfoPopup()
 }

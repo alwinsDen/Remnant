@@ -26,11 +26,9 @@ import com.composables.icons.lucide.MoveUpLeft
 import org.alwinsden.remnant.InterFontFamily
 
 @Composable
-fun PersonalInfoPopup() {
+fun PersonalInfoPopup(onOuterClick: () -> Unit, onSelectedOption: (selected: Int) -> Unit) {
     BottomControllerComponent(
-        onOuterClick = {
-            println("TRIGGER logs")
-        },
+        onOuterClick = onOuterClick,
     ) {
         Column(
             modifier = Modifier
@@ -55,7 +53,7 @@ fun PersonalInfoPopup() {
             //this is the selection component
             Button(
                 onClick = {
-                    //
+                    onSelectedOption(0)
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xffD9D9D9)
@@ -83,7 +81,7 @@ fun PersonalInfoPopup() {
             //this is the selection component
             Button(
                 onClick = {
-                    //
+                    onSelectedOption(1)
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xffD9D9D9)
@@ -111,7 +109,7 @@ fun PersonalInfoPopup() {
             //this is the selection component
             Button(
                 onClick = {
-                    //
+                    onSelectedOption(2)
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xffD9D9D9)
