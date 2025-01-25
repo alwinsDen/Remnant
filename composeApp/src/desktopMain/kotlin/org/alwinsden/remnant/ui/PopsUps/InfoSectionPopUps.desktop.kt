@@ -22,3 +22,10 @@ actual fun TimePickerState(
     onDismissRequest: () -> Unit
 ) {
 }
+
+@Composable
+actual fun UserDescription(
+    onDismissRequest: () -> Unit,
+    onSaveData: (userPrompt: String) -> Unit
+) {
+}

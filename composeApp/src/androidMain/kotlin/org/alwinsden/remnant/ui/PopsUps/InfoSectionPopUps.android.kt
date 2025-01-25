@@ -1,7 +1,11 @@
 package org.alwinsden.remnant.ui.PopsUps
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +20,8 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TimeInput
 import androidx.compose.material3.rememberTimePickerState
@@ -26,14 +32,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.composables.icons.lucide.Lucide
+import com.composables.icons.lucide.Send
 import org.alwinsden.remnant.InterFontFamily
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import java.util.Calendar
 
-@Preview
 @Composable
 actual fun EnterCityNameDialog(
     onDismissRequest: () -> Unit,
@@ -180,7 +189,7 @@ actual fun TimePickerState(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "Work start at",
+                text = "Work starts at",
                 fontFamily = InterFontFamily,
 
                 )
@@ -233,6 +242,87 @@ actual fun TimePickerState(
                 ) {
                     Text(text = "Save")
                 }
+            }
+        }
+    }
+}
+
+//user description preview
+@Preview
+@Composable
+fun UserDescPreview() {
+    UserDescription(
+        onDismissRequest = {
+            //
+        },
+        onSaveData = {
+            //
+        }
+    )
+}
+
+@Composable
+actual fun UserDescription(
+    onDismissRequest: () -> Unit,
+    onSaveData: (userPrompt: String) -> Unit
+) {
+    var userPrompt = remember { mutableStateOf("") }
+    BottomControllerComponent(
+        onOuterClick = onDismissRequest
+    ) {
+        Column(
+            modifier = Modifier
+                .background(
+                    color = Color(0xffffffff),
+                    shape = RoundedCornerShape(
+                        topStart = 25.dp,
+                        topEnd = 25.dp
+                    )
+                )
+                .fillMaxWidth()
+                .padding(vertical = 15.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Box() {
+                TextField(
+                    value = userPrompt.value,
+                    placeholder = {
+                        Text(
+                            text = "I am the kind of person who...",
+                            fontSize = 13.sp,
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .height(250.dp)
+                        .padding(0.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        disabledTextColor = Color.Transparent,
+                        backgroundColor = Color(0xffE1E1E1),
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent
+                    ),
+                    onValueChange = {
+                        userPrompt.value = it
+                    },
+                    shape = RoundedCornerShape(5)
+                )
+                Image(
+                    Lucide.Send,
+                    colorFilter = ColorFilter.tint(color = Color(0xff888888)),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(10.dp)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) {
+                            onSaveData(userPrompt.value)
+                        }
+                )
             }
         }
     }

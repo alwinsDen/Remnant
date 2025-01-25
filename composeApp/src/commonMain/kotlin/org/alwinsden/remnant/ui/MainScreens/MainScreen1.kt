@@ -37,6 +37,7 @@ import org.alwinsden.remnant.ui.PopsUps.EnterAgeNumberDialog
 import org.alwinsden.remnant.ui.PopsUps.EnterCityNameDialog
 import org.alwinsden.remnant.ui.PopsUps.PersonalInfoPopup
 import org.alwinsden.remnant.ui.PopsUps.TimePickerState
+import org.alwinsden.remnant.ui.PopsUps.UserDescription
 
 @Composable
 fun MainScreen1() {
@@ -103,7 +104,10 @@ fun MainScreen1() {
                 SpecialColoredBckBox(
                     bckColor = 0xff000000,
                     header = "Things we should about you?",
-                    content = "Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? "
+                    content = "Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? ",
+                    onClick = {
+                        optionEnterState.value = 4
+                    }
                 )
             }
         }
@@ -150,6 +154,17 @@ fun MainScreen1() {
                 },
                 onDismissRequest = {
                     optionEnterState.value = -1
+                }
+            )
+        }
+
+        4 -> {
+            UserDescription(
+                onDismissRequest = {
+                    optionEnterState.value = -1
+                },
+                onSaveData = { it ->
+                    userBioSelection["userDescription"] = it
                 }
             )
         }
@@ -231,7 +246,7 @@ private fun ColoredBckBox(bckColor: Long, header: String, content: String, onCli
 }
 
 @Composable
-fun SpecialColoredBckBox(bckColor: Long, header: String, content: String) {
+fun SpecialColoredBckBox(bckColor: Long, header: String, content: String, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -282,10 +297,15 @@ fun SpecialColoredBckBox(bckColor: Long, header: String, content: String) {
                 )
                 .padding(vertical = 8.dp, horizontal = 12.dp)
                 .fillMaxWidth(.965f)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
+                    onClick()
+                }
         ) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
-//                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column {

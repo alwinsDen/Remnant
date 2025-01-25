@@ -159,6 +159,12 @@ expect fun TimePickerState(
 ): Unit
 
 @Composable
+expect fun UserDescription(
+    onDismissRequest: () -> Unit,
+    onSaveData: (userPrompt: String) -> Unit
+)
+
+@Composable
 fun BottomControllerComponent(onOuterClick: () -> Unit, content: @Composable () -> Unit) {
     Column(
         modifier = Modifier
