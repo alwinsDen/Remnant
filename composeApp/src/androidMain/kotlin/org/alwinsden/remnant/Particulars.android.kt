@@ -158,6 +158,5 @@ actual val mainScreenColumnWidth: Dp = Dp.Unspecified
 @Preview
 @Composable
 fun test() {
-//    PersonalInfoPopup()
-//    TimePickerState()
+//    MainScreen1()
 }

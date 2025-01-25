@@ -26,7 +26,7 @@ class UserSchemaService(private val database: Database) {
         val email = varchar("email", length = 50).uniqueIndex()
         val state = integer(name = "state").default(1) //this is the page state.
         val gender = integer(name = "gender").default(GenderEnum.NOT_SPECIFIED.value)
-        val city = varchar("city", length = 50).nullable()
+        val city = varchar("city", length = 50)
         val user_age = integer("user_age").default(18).check { it greaterEq 18 }
         val working_hr_start = integer("working_hr_start")
             .check { it.between(0, 23) }
@@ -60,7 +60,7 @@ class UserSchemaService(private val database: Database) {
         transaction(database) {
             if (Users.exists()) {
                 //TODO: uncomment below to run change execs. WARNED: makes irreversible changes.
-                //exec("update ${Users.tableName} set user_age = 18")
+                //exec("update ${Users.tableName} set city = 'not selected'")
             }
             //this automatically manages new columns.
             SchemaUtils.createMissingTablesAndColumns(Users)

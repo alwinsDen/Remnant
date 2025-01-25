@@ -1,16 +1,22 @@
 package org.alwinsden.remnant.networking
 
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.util.network.*
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.request.headers
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
+import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
 import org.alwinsden.remnant.api_data_class.AuthPost
 import org.alwinsden.remnant.api_data_class.ExposedUserWithId
 import org.alwinsden.remnant.api_data_class.MessageResponseClass
 import org.alwinsden.remnant.api_data_class.ResponseMessage
+import org.alwinsden.remnant.api_data_class.UserBasicDetails
 import org.alwinsden.remnant.dataStore.coreComponent
 import org.alwinsden.remnant.networkHost
 import org.alwinsden.remnant.networking_utils.NetworkError
@@ -98,6 +104,39 @@ class ApiCentral(
                 headers {
                     append("Authorization", "Bearer $jwtTokenValue")
                 }
+            }
+        } catch (e: AuthenticationException) {
+            return Result.Error(NetworkError.UNAUTHORIZED)
+        }
+        return if (response.status == HttpStatusCode.Accepted) {
+            Result.Success(response.body())
+        } else {
+            Result.Error(NetworkError.BAD_REQUEST)
+        }
+    }
+
+    suspend fun userBasicDetailsRequest(data: UserBasicDetails): Result<ResponseMessage, NetworkError> {
+        val jwtTokenValue = coreComponent.appPreferences.doesAuthKeyExist()
+        val response: HttpResponse = try {
+            httpClient.post(
+                "$serverEndPoint/basic_user_details",
+            ) {
+                headers {
+                    append("Authorization", "Bearer $jwtTokenValue")
+                }
+                contentType(ContentType.Application.Json)
+                setBody(
+                    UserBasicDetails(
+                        gender = data.gender,
+                        city = data.city,
+                        userAge = data.userAge,
+                        workingHrStart = data.workingHrStart,
+                        workingMinuteStart = data.workingMinuteStart,
+                        workingHrEnd = data.workingHrEnd,
+                        workingMinuteEnd = data.workingMinuteEnd,
+                        userPrompt = data.userPrompt
+                    )
+                )
             }
         } catch (e: AuthenticationException) {
             return Result.Error(NetworkError.UNAUTHORIZED)

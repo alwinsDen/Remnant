@@ -1,17 +1,23 @@
 package org.alwinsden.remnant
 
 import com.auth0.jwk.JwkProviderBuilder
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
-import io.ktor.server.engine.*
-import io.ktor.server.http.content.*
-import io.ktor.server.netty.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.jwt.jwt
+import io.ktor.server.engine.commandLineEnvironment
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.http.content.file
+import io.ktor.server.http.content.static
+import io.ktor.server.http.content.staticRootFolder
+import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.response.respond
+import io.ktor.server.routing.routing
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,7 +31,7 @@ import org.alwinsden.remnant.requests.openApi.OpenApiPOST
 import org.alwinsden.remnant.requests.userVerification.UserVerificationGET
 import org.alwinsden.remnant.requests.userVerification.UserVerificationPOST
 import java.io.File
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 fun main(args: Array<String>) {

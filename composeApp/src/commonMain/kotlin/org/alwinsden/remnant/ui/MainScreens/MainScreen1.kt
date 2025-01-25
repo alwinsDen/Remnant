@@ -22,6 +22,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,11 +34,18 @@ import androidx.compose.ui.unit.sp
 import com.composables.icons.lucide.BadgeCheck
 import com.composables.icons.lucide.ChevronRight
 import com.composables.icons.lucide.Lucide
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.alwinsden.remnant.GenderMaps
+import org.alwinsden.remnant.HTTP_CALL_CLIENT
 import org.alwinsden.remnant.InterFontFamily
 import org.alwinsden.remnant.JudsonFontFamily
 import org.alwinsden.remnant.PowerButtonPadding
+import org.alwinsden.remnant.api_data_class.UserBasicDetails
 import org.alwinsden.remnant.mainScreenColumnWidth
+import org.alwinsden.remnant.networking_utils.onError
+import org.alwinsden.remnant.networking_utils.onSuccess
 import org.alwinsden.remnant.ui.PopsUps.EnterAgeNumberDialog
 import org.alwinsden.remnant.ui.PopsUps.EnterCityNameDialog
 import org.alwinsden.remnant.ui.PopsUps.PersonalInfoPopup
@@ -47,6 +55,7 @@ import org.alwinsden.remnant.ui.PopsUps.UserDescription
 @Composable
 fun MainScreen1() {
     val optionEnterState = remember { mutableIntStateOf(-1) }
+    val changesSaved = remember { mutableStateOf(false) }
     val userBioSelection = remember {
         mutableMapOf<String, Any>(
             "gender" to 0,
@@ -143,24 +152,47 @@ fun MainScreen1() {
                 .align(Alignment.BottomCenter)
                 .padding(horizontal = 10.dp)
         ) {
+
             Row(
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Image(
-                    Lucide.BadgeCheck,
-                    contentDescription = null,
-                    colorFilter = ColorFilter.tint(color = Color(0xff7C7C7C))
-                )
-                Text(
-                    text = "changes have been saved.",
-                    fontFamily = InterFontFamily,
-                    color = Color(0xff7C7C7C)
-                )
+                if (changesSaved.value) {
+                    Image(
+                        Lucide.BadgeCheck,
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(color = Color(0xff7C7C7C))
+                    )
+                    Text(
+                        text = "changes saved.",
+                        fontFamily = InterFontFamily,
+                        color = Color(0xff7C7C7C)
+                    )
+                }
             }
             Button(
                 onClick = {
-                    println(userBioSelection)
+                    val userBasicStructData = UserBasicDetails(
+                        gender = userBioSelection["gender"] as Int,
+                        city = userBioSelection["city"] as String,
+                        userAge = userBioSelection["age"] as Int,
+                        userPrompt = userBioSelection["userDescription"] as String,
+                        workingHrStart = userBioSelection["startHour"] as Int,
+                        workingMinuteStart = userBioSelection["startMinute"] as Int,
+                        workingHrEnd = userBioSelection["endHour"] as Int,
+                        workingMinuteEnd = userBioSelection["endMinute"] as Int
+                    )
+                    //this here is the user details logic.
+                    CoroutineScope(Dispatchers.IO).launch {
+                        HTTP_CALL_CLIENT.userBasicDetailsRequest(data = userBasicStructData)
+                            .onSuccess { it ->
+                                println(it.message)
+                                changesSaved.value = true
+                            }
+                            .onError {
+                                println("failed to send user details")
+                            }
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xff599A85)
@@ -168,7 +200,7 @@ fun MainScreen1() {
                 shape = RoundedCornerShape(50)
             ) {
                 Text(
-                    text = "next ->",
+                    text = "save ->",
                     color = Color(0xffffffff),
                     fontFamily = InterFontFamily
                 )

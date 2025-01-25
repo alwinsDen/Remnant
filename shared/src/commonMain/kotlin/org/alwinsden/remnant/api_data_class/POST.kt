@@ -18,9 +18,11 @@ data class MessageResponseClass(
 @Serializable
 data class UserBasicDetails(
     val gender: Int = GenderEnum.NOT_SPECIFIED.value,
-    val city: String? = null,
-    val userAge: Int = 13,
-    val workingHrStart: Int = 6,
-    val workingHrEnd: Int = 17,
+    val city: String = "not selected",
+    val userAge: Int = 18,
+    val workingHrStart: Int = 9,
+    val workingMinuteStart: Int = 0,
+    val workingHrEnd: Int = 18,
+    val workingMinuteEnd: Int = 30,
     val userPrompt: String
 )
