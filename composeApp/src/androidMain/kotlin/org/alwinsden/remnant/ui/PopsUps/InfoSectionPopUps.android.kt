@@ -46,9 +46,10 @@ import java.util.Calendar
 @Composable
 actual fun EnterCityNameDialog(
     onDismissRequest: () -> Unit,
-    onSaveData: (cityName: String) -> Unit
+    onSaveData: (cityName: String) -> Unit,
+    defaultValue: String
 ) {
-    val expectedCityName = remember { mutableStateOf("") }
+    val expectedCityName = remember { mutableStateOf(defaultValue) }
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card {
             Column(
@@ -102,7 +103,8 @@ actual fun EnterCityNameDialog(
 @Composable
 actual fun EnterAgeNumberDialog(
     onDismissRequest: () -> Unit,
-    onSaveData: (ageNumber: Int) -> Unit
+    onSaveData: (ageNumber: Int) -> Unit,
+    defaultValue: Int
 ) {
     val expectedAgeValue = remember { mutableIntStateOf(18) }
     Dialog(onDismissRequest = { onDismissRequest() }) {
@@ -160,17 +162,18 @@ actual fun EnterAgeNumberDialog(
 @Composable
 actual fun TimePickerState(
     time: (startHour: Int, startMinute: Int, endHour: Int, endMinute: Int) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    defaultValue: MutableMap<String, Any>
 ) {
     val currentTime = Calendar.getInstance()
     val timePicker = rememberTimePickerState(
-        initialHour = currentTime.get(Calendar.HOUR_OF_DAY),
-        initialMinute = currentTime.get(Calendar.MINUTE),
+        initialHour = defaultValue["startHour"] as Int,
+        initialMinute = defaultValue["startMinute"] as Int,
         is24Hour = true
     )
     val timePickerEnd = rememberTimePickerState(
-        initialHour = currentTime.get(Calendar.HOUR_OF_DAY) + 1,
-        initialMinute = currentTime.get(Calendar.MINUTE),
+        initialHour = defaultValue["endHour"] as Int,
+        initialMinute = defaultValue["endMinute"] as Int,
         is24Hour = true
     )
     Dialog(onDismissRequest = {
@@ -257,16 +260,18 @@ fun UserDescPreview() {
         },
         onSaveData = {
             //
-        }
+        },
+        defaultValue = "I am the kind of person who..."
     )
 }
 
 @Composable
 actual fun UserDescription(
     onDismissRequest: () -> Unit,
-    onSaveData: (userPrompt: String) -> Unit
+    onSaveData: (userPrompt: String) -> Unit,
+    defaultValue: String
 ) {
-    var userPrompt = remember { mutableStateOf("") }
+    var userPrompt = remember { mutableStateOf(defaultValue) }
     BottomControllerComponent(
         onOuterClick = onDismissRequest
     ) {

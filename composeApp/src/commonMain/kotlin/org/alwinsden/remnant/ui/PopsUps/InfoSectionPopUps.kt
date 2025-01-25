@@ -26,7 +26,11 @@ import com.composables.icons.lucide.MoveUpLeft
 import org.alwinsden.remnant.InterFontFamily
 
 @Composable
-fun PersonalInfoPopup(onOuterClick: () -> Unit, onSelectedOption: (selected: Int) -> Unit) {
+fun PersonalInfoPopup(
+    onOuterClick: () -> Unit,
+    onSelectedOption: (selected: Int) -> Unit,
+    defaultValue: Int
+) {
     BottomControllerComponent(
         onOuterClick = onOuterClick,
     ) {
@@ -53,7 +57,7 @@ fun PersonalInfoPopup(onOuterClick: () -> Unit, onSelectedOption: (selected: Int
             //this is the selection component
             Button(
                 onClick = {
-                    onSelectedOption(0)
+                    onSelectedOption(1)
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xffD9D9D9)
@@ -81,7 +85,7 @@ fun PersonalInfoPopup(onOuterClick: () -> Unit, onSelectedOption: (selected: Int
             //this is the selection component
             Button(
                 onClick = {
-                    onSelectedOption(1)
+                    onSelectedOption(2)
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xffD9D9D9)
@@ -109,7 +113,7 @@ fun PersonalInfoPopup(onOuterClick: () -> Unit, onSelectedOption: (selected: Int
             //this is the selection component
             Button(
                 onClick = {
-                    onSelectedOption(2)
+                    onSelectedOption(0)
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xffD9D9D9)
@@ -141,7 +145,8 @@ fun PersonalInfoPopup(onOuterClick: () -> Unit, onSelectedOption: (selected: Int
 @Composable
 expect fun EnterCityNameDialog(
     onDismissRequest: () -> Unit,
-    onSaveData: (cityName: String) -> Unit
+    onSaveData: (cityName: String) -> Unit,
+    defaultValue: String
 ): Unit
 
 
@@ -149,19 +154,22 @@ expect fun EnterCityNameDialog(
 @Composable
 expect fun EnterAgeNumberDialog(
     onDismissRequest: () -> Unit,
-    onSaveData: (ageNumber: Int) -> Unit
+    onSaveData: (ageNumber: Int) -> Unit,
+    defaultValue: Int
 ): Unit
 
 @Composable
 expect fun TimePickerState(
     time: (startHour: Int, startMinute: Int, endHour: Int, endMinute: Int) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    defaultValue: MutableMap<String, Any>
 ): Unit
 
 @Composable
 expect fun UserDescription(
     onDismissRequest: () -> Unit,
-    onSaveData: (userPrompt: String) -> Unit
+    onSaveData: (userPrompt: String) -> Unit,
+    defaultValue: String
 )
 
 @Composable

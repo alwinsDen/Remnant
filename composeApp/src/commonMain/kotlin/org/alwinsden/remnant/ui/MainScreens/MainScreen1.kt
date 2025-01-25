@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.composables.icons.lucide.ChevronRight
 import com.composables.icons.lucide.Lucide
+import org.alwinsden.remnant.GenderMaps
 import org.alwinsden.remnant.InterFontFamily
 import org.alwinsden.remnant.JudsonFontFamily
 import org.alwinsden.remnant.PowerButtonPadding
@@ -42,7 +43,18 @@ import org.alwinsden.remnant.ui.PopsUps.UserDescription
 @Composable
 fun MainScreen1() {
     val optionEnterState = remember { mutableIntStateOf(-1) }
-    val userBioSelection = remember { mutableMapOf<String, Any>() }
+    val userBioSelection = remember {
+        mutableMapOf<String, Any>(
+            "gender" to 0,
+            "city" to "not selected",
+            "age" to 18,
+            "startHour" to 9,
+            "startMinute" to 0,
+            "endHour" to 18,
+            "endMinute" to 30,
+            "userDescription" to "Say something about yourself. This information is crucial for our systems to optimize your Remnant experience. Thanks!"
+        )
+    }
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -72,7 +84,7 @@ fun MainScreen1() {
                 ColoredBckBox(
                     bckColor = 0xff76BF00,
                     header = "Personalize mental health guidance.",
-                    content = "Gender: not specified.",
+                    content = "Gender: " + GenderMaps[userBioSelection["gender"]],
                     onClick = {
                         optionEnterState.value = 0
                     }
@@ -80,7 +92,7 @@ fun MainScreen1() {
                 ColoredBckBox(
                     bckColor = 0xffA9C1ED,
                     header = "Adapts advice for location context.",
-                    content = "city: not selected.",
+                    content = "city: " + userBioSelection["city"],
                     onClick = {
                         optionEnterState.value = 1
                     }
@@ -88,7 +100,7 @@ fun MainScreen1() {
                 ColoredBckBox(
                     bckColor = 0xffC88DE3,
                     header = "Tailors suggestions for age.",
-                    content = "age: not specified.",
+                    content = "age: " + userBioSelection["age"],
                     onClick = {
                         optionEnterState.value = 2
                     }
@@ -96,7 +108,15 @@ fun MainScreen1() {
                 ColoredBckBox(
                     bckColor = 0xffB56161,
                     header = "Helps us determine how busy you are.",
-                    content = "specify work hours: eg. 9am-6:30pm.",
+                    content = "specify work hours: " + String.format(
+                        "%02d",
+                        userBioSelection["startHour"]
+                    ) + ":" + String.format(
+                        "%02d", userBioSelection["startMinute"]
+                    ) + " - " + String.format(
+                        "%02d",
+                        userBioSelection["endHour"]
+                    ) + ":" + String.format("%02d", userBioSelection["endMinute"]),
                     onClick = {
                         optionEnterState.value = 3
                     }
@@ -104,7 +124,7 @@ fun MainScreen1() {
                 SpecialColoredBckBox(
                     bckColor = 0xff000000,
                     header = "Things we should about you?",
-                    content = "Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? Things we should about you? ",
+                    content = userBioSelection["userDescription"] as String,
                     onClick = {
                         optionEnterState.value = 4
                     }
@@ -119,7 +139,9 @@ fun MainScreen1() {
             }, onSelectedOption = { it ->
                 userBioSelection["gender"] = it
                 optionEnterState.value = -1
-            })
+            },
+                defaultValue = userBioSelection["gender"] as Int
+            )
         }
 
         1 -> {
@@ -128,7 +150,9 @@ fun MainScreen1() {
             }, onSaveData = { it ->
                 userBioSelection["city"] = it
                 optionEnterState.value = -1
-            })
+            },
+                defaultValue = userBioSelection["city"] as String
+            )
         }
 
         2 -> {
@@ -139,7 +163,8 @@ fun MainScreen1() {
                 onSaveData = { it ->
                     userBioSelection["age"] = it
                     optionEnterState.value = -1
-                }
+                },
+                defaultValue = userBioSelection["age"] as Int
             )
         }
 
@@ -154,7 +179,8 @@ fun MainScreen1() {
                 },
                 onDismissRequest = {
                     optionEnterState.value = -1
-                }
+                },
+                defaultValue = userBioSelection
             )
         }
 
@@ -165,7 +191,9 @@ fun MainScreen1() {
                 },
                 onSaveData = { it ->
                     userBioSelection["userDescription"] = it
-                }
+                    optionEnterState.value = -1
+                },
+                defaultValue = userBioSelection["userDescription"] as String
             )
         }
     }
@@ -285,6 +313,7 @@ fun SpecialColoredBckBox(bckColor: Long, header: String, content: String, onClic
         }
         Column(
             modifier = Modifier
+                .height(130.dp)
                 .padding(start = 5.dp)
                 .background(
                     shape = RoundedCornerShape(8.dp),
