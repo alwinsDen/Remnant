@@ -160,7 +160,7 @@ fun MainScreen1() {
             }
             Button(
                 onClick = {
-                    //
+                    println(userBioSelection)
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xff599A85)

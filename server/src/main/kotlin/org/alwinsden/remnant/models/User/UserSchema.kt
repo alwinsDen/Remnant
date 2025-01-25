@@ -4,11 +4,20 @@ import kotlinx.coroutines.Dispatchers
 import org.alwinsden.remnant.api_data_class.ExposedUser
 import org.alwinsden.remnant.api_data_class.ExposedUserWithId
 import org.alwinsden.remnant.enum_class.GenderEnum
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.exists
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.*
+import org.jetbrains.exposed.sql.update
+import java.util.UUID
 
 class UserSchemaService(private val database: Database) {
     object Users : Table() {
@@ -18,13 +27,19 @@ class UserSchemaService(private val database: Database) {
         val state = integer(name = "state").default(1) //this is the page state.
         val gender = integer(name = "gender").default(GenderEnum.NOT_SPECIFIED.value)
         val city = varchar("city", length = 50).nullable()
-        val user_age = integer("user_age").default(13).check { it greaterEq 13 }
+        val user_age = integer("user_age").default(18).check { it greaterEq 18 }
         val working_hr_start = integer("working_hr_start")
             .check { it.between(0, 23) }
-            .default(6)
+            .default(9)
+        val working_minute_start = integer("working_minute_start")
+            .check { it.between(0, 59) }
+            .default(0)
         val working_hr_end = integer("working_hr_end")
             .check { it.between(0, 23) }
-            .default(17)
+            .default(18)
+        val working_minute_end = integer("working_minute_end")
+            .check { it.between(0, 59) }
+            .default(30)
         val user_prompt = varchar("user_prompt", length = 200).default("")
         val demo_completed = bool(name = "demo_completed").default(false)
         val jti_identifier = uuid("jti_identifier").default(UUID.randomUUID())
@@ -43,17 +58,9 @@ class UserSchemaService(private val database: Database) {
 
     init {
         transaction(database) {
-//            if (Users.columns.any { it.name == "age" }) {
-//                exec("alter table ${Users.tableName} drop column age")
-//            }
-            /*
-            * TODO: Exposed has issues with checking or existence of columns
-            *  so use raw sql query for this.
-            * */
             if (Users.exists()) {
-                exec("alter table ${Users.tableName} drop column if exists age")
-                /*this section should only be used to make modifications to the exisitng
-                * columns or tables rather than adding stuff.*/
+                //TODO: uncomment below to run change execs. WARNED: makes irreversible changes.
+                //exec("update ${Users.tableName} set user_age = 18")
             }
             //this automatically manages new columns.
             SchemaUtils.createMissingTablesAndColumns(Users)
@@ -61,7 +68,8 @@ class UserSchemaService(private val database: Database) {
     }
 
     //related User operations
-    suspend fun <T> dbQuery(block: suspend () -> T): T = newSuspendedTransaction(Dispatchers.IO) { block() }
+    suspend fun <T> dbQuery(block: suspend () -> T): T =
+        newSuspendedTransaction(Dispatchers.IO) { block() }
 
     /**
      * Creates a new user in the database using the provided `ExposedUser` object and returns the newly created user with an ID.
