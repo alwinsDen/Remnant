@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
@@ -24,9 +26,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.composables.icons.lucide.BadgeCheck
 import com.composables.icons.lucide.ChevronRight
 import com.composables.icons.lucide.Lucide
 import org.alwinsden.remnant.GenderMaps
@@ -128,6 +132,45 @@ fun MainScreen1() {
                     onClick = {
                         optionEnterState.value = 4
                     }
+                )
+            }
+        }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(horizontal = 10.dp)
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Image(
+                    Lucide.BadgeCheck,
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(color = Color(0xff7C7C7C))
+                )
+                Text(
+                    text = "changes have been saved.",
+                    fontFamily = InterFontFamily,
+                    color = Color(0xff7C7C7C)
+                )
+            }
+            Button(
+                onClick = {
+                    //
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xff599A85)
+                ),
+                shape = RoundedCornerShape(50)
+            ) {
+                Text(
+                    text = "next ->",
+                    color = Color(0xffffffff),
+                    fontFamily = InterFontFamily
                 )
             }
         }
