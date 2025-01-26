@@ -43,6 +43,7 @@ class UserSchemaService(private val database: Database) {
         val user_prompt = varchar("user_prompt", length = 200).default("")
         val demo_completed = bool(name = "demo_completed").default(false)
         val jti_identifier = uuid("jti_identifier").default(UUID.randomUUID())
+        val filled_user_details = bool(name = "filled_user_details").default(false)
         override val primaryKey = PrimaryKey(id)
     }
 
@@ -53,7 +54,8 @@ class UserSchemaService(private val database: Database) {
         this[Users.state],
         gender = GenderEnum.fromValue(this[Users.gender])!!.displayName,
         this[Users.city],
-        this[Users.demo_completed]
+        this[Users.demo_completed],
+        this[Users.filled_user_details]
     )
 
     init {

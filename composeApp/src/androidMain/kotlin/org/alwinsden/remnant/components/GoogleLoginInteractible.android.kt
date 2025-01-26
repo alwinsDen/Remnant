@@ -28,7 +28,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import org.alwinsden.remnant.*
+import org.alwinsden.remnant.BuildConfig
+import org.alwinsden.remnant.HTTP_CALL_CLIENT
+import org.alwinsden.remnant.LocalNavController
+import org.alwinsden.remnant.NavRouteClass
+import org.alwinsden.remnant.RemnantAppViewModal
 import org.alwinsden.remnant.api_data_class.AuthPost
 import org.alwinsden.remnant.dataStore.coreComponent
 import org.alwinsden.remnant.networking_utils.NetworkLogCodes
@@ -47,13 +51,20 @@ suspend fun signInWithGoogleIdToken(idToken: String, nvvController: NavHostContr
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val authRequest =
-                    HTTP_CALL_CLIENT.authRequest(AuthPost(authCode = userIdToken, authMachine = "ANDROID"))
+                    HTTP_CALL_CLIENT.authRequest(
+                        AuthPost(
+                            authCode = userIdToken,
+                            authMachine = "ANDROID"
+                        )
+                    )
                 withContext(Dispatchers.Main) {
                     authRequest.onSuccess {
                         coreComponent.appPreferences.addUpdateAuthKey(jwtToken = it.token)
                         val profileResponse = HTTP_CALL_CLIENT.profileGetRequest()
                         profileResponse.onSuccess {
-                            if (it.demo_completed == true) {
+                            if (it.demo_completed == true && it.filled_user_details == true) {
+                                nvvController.navigate(NavRouteClass.ProductScreen1.route)
+                            } else if (it.demo_completed == true && it.filled_user_details == false) {
                                 nvvController.navigate(NavRouteClass.MainScreen1.route)
                             } else {
                                 nvvController.navigate(NavRouteClass.EntryScreen1.route)
@@ -110,8 +121,14 @@ actual fun GoogleLoginInteractible() {
                         request = request,
                         context = context,
                     )
-                    viewModel.onSignInWithGoogle(requestSls.credential, nvvController = nvvController)
-                    Log.d(NetworkLogCodes.SuccessPing.code, "Credential obtained: ${requestSls.credential}")
+                    viewModel.onSignInWithGoogle(
+                        requestSls.credential,
+                        nvvController = nvvController
+                    )
+                    Log.d(
+                        NetworkLogCodes.SuccessPing.code,
+                        "Credential obtained: ${requestSls.credential}"
+                    )
                 } catch (e: GetCredentialException) {
                     Log.d(NetworkLogCodes.FailedPing.code, e.message.orEmpty())
                 }

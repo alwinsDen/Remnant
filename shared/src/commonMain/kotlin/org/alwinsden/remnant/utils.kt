@@ -12,4 +12,7 @@ sealed class NavRouteClass(val route: String) {
 
     //main screens
     object MainScreen1 : NavRouteClass("mainscreen_1")
+
+    //product screens
+    object ProductScreen1 : NavRouteClass("productscreen_1")
 }

@@ -24,7 +24,8 @@ data class ExposedUserWithId(
     val state: Int,
     val gender: String,
     val city: String? = null,
-    val demo_completed: Boolean? = false
+    val demo_completed: Boolean? = false,
+    val filled_user_details: Boolean? = false
 )
 
 @Serializable

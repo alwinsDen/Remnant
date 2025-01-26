@@ -1,11 +1,14 @@
 package org.alwinsden.remnant.requests.userVerification
 
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.call
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.principal
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
 import org.alwinsden.remnant.api_data_class.ExposedUserWithId
 import org.alwinsden.remnant.api_data_class.ResponseMessage
 import org.alwinsden.remnant.models.User.UserSchemaService
@@ -48,7 +51,8 @@ class UserVerificationGET(private val database: Database) {
                         userData.state,
                         userData.gender,
                         userData.city,
-                        userData.demo_completed
+                        userData.demo_completed,
+                        userData.filled_user_details
                     )
                 )
             }

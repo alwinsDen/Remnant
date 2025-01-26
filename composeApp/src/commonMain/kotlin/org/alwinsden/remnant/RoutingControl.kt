@@ -16,6 +16,7 @@ import org.alwinsden.remnant.ui.DemoScreens.EntryScreen1
 import org.alwinsden.remnant.ui.DemoScreens.EntryScreen3
 import org.alwinsden.remnant.ui.Home
 import org.alwinsden.remnant.ui.MainScreens.MainScreen1
+import org.alwinsden.remnant.ui.ProductScreens.ProductScreen
 
 
 @Composable
@@ -96,6 +97,12 @@ fun RoutingControl() {
                 BackgroundTheme(color = 0xffffffff) {
                     LogoutGoogle(iconColor = 0xff000000)
                     MainScreen1()
+                }
+            }
+            composable(route = NavRouteClass.ProductScreen1.route) {
+                BackgroundTheme(color = 0xffffffff) {
+                    LogoutGoogle(iconColor = 0xff000000)
+                    ProductScreen()
                 }
             }
         }

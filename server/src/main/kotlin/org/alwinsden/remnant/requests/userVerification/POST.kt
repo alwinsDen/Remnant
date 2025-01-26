@@ -30,6 +30,7 @@ class UserVerificationPOST(private val database: Database) {
                     it[working_hr_end] = req.workingHrEnd
                     it[working_minute_end] = req.workingMinuteEnd
                     it[user_prompt] = req.userPrompt
+                    it[filled_user_details] = true
                 }
             }
             call.respond(
